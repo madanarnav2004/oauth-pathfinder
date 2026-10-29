@@ -32,7 +32,8 @@ export function withProbe(g: Guide, rec?: ProbeRecord): Guide {
     note: "Dummy client ID and secret. No real credentials were sent.",
   };
   const claims = rec.results.map((p) => ({ text: describeProbe(p), status: "tested" as const, src: ["probe"] }));
-  return { ...g, sources: { ...g.sources, probe: src }, nuances: [...claims, ...g.nuances].slice(0, 12) };
+  const nuances = g.nuances.filter((claim) => !claim.src.includes("probe"));
+  return { ...g, sources: { ...g.sources, probe: src }, nuances: [...claims, ...nuances].slice(0, 12) };
 }
 
 export function getGuide(slug: string): Guide | null {

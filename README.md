@@ -35,6 +35,8 @@ npm run dev          # http://localhost:3000, library and MCP work with no keys
 npm test             # 46 tests
 ```
 
+Probe results are committed in `data/probes.json` and can be refreshed with `npm run probe`.
+
 For live generation, copy `.env.example` to `.env.local` and fill in:
 
 ```
@@ -72,7 +74,7 @@ The card is one HTML string (`lib/card-html.generated.ts`, built by `npm run car
 ## Limits, honestly
 
 - **I didn't register any OAuth apps.** That means creating accounts and passing identity checks, which an agent shouldn't do for you. What it can do: read, probe public endpoints, and prepare everything you paste in (`prepare_setup`). The guides say which steps are yours.
-- **`tested` starts empty.** The environment I built this in couldn't reach provider endpoints. Press "run live probe" on any guide, or run `npm run probe`, and the results are recorded and shown as tested.
+- Tested claims come from credential-free probes of each provider's authorize and token endpoints (dummy client, no real credentials), run on 2026-10-29. They show the endpoint answers and how it errors, nothing about approval.
 - **Some pages wouldn't open or didn't answer**: Spotify's 2026 developer-access announcement, LinkedIn's Page-verification help article, Discord's verification process, and Meta's review timelines. Those are `unknown` or `inferred`, and `/how-we-checked` lists them along with what was corrected along the way.
 - **Docs change.** Every source has the date I read it. Past a quarter, re-check.
 - **Live generation quality depends on the model and on what search finds.** The quote-check and verifier catch unsupported claims, not missing ones. `npm run eval` is how to measure that.

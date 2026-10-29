@@ -17,7 +17,7 @@
   ],
   "limits": [
     "No OAuth apps were registered. Doing so means creating accounts and passing identity checks, which an agent shouldn't do for you. What an agent can do here is read, probe public endpoints with dummy credentials, and prepare everything you paste in.",
-    "The 'tested' status is empty until probes run. The build sandbox couldn't reach provider endpoints, so the site runs them itself: press 'Run live probe' on a guide, or run npm run probe.",
+    "Tested claims come from credential-free probes of each provider's authorize and token endpoints (dummy client, no real credentials), run on 2026-10-29. They show the endpoint answers and how it errors, nothing about approval.",
     "Documentation changes. Every source carries the date we read it; treat anything older than a quarter as a prompt to re-check."
   ]
 }
