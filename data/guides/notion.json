@@ -1,0 +1,107 @@
+{
+  "slug": "notion",
+  "name": "Notion",
+  "domain": "notion.so",
+  "label": "choose your install scope carefully, it's const",
+  "summary": "One short form and you have credentials. The sharp edge is a setting you can't change later, and a review step the docs mention but don't explain.",
+  "difficulty": 2,
+  "blocker": "Installation scope is fixed at creation. Pick 'selected workspaces' and you can never list in the Marketplace without starting over.",
+  "handsOn": { "lo": 20, "hi": 60, "basis": "inferred" },
+  "wait": null,
+  "steps": [
+    {
+      "id": "create",
+      "title": "Create a public connection",
+      "detail": "Developer portal, Build, Public connections, Create new connection. Public is the type that supports OAuth.",
+      "owner": "you", "kind": "do", "minutes": { "lo": 3, "hi": 10, "basis": "inferred" },
+      "status": "sourced", "src": ["n1"]
+    },
+    {
+      "id": "form",
+      "title": "Fill in the creation form",
+      "detail": "Name and a development workspace, one or more redirect URIs, installation scope, and capabilities. Choose the scope deliberately.",
+      "owner": "you", "kind": "do", "minutes": { "lo": 5, "hi": 20, "basis": "inferred" },
+      "status": "sourced", "src": ["n1"],
+      "fields": [
+        { "label": "Installation scope", "value": "Any workspace (Marketplace-eligible) or Selected workspaces (not)" },
+        { "label": "Redirect URI", "value": "Per Notion's guide via Composio: https, exact match, no trailing slash" },
+        { "label": "Capabilities", "value": "Read, update or insert content; user info" }
+      ]
+    },
+    {
+      "id": "creds",
+      "title": "Copy the OAuth client ID and secret",
+      "detail": "From the Configuration tab. Your server needs both to turn an authorization code into a token.",
+      "owner": "you", "kind": "do", "minutes": { "lo": 2, "hi": 5, "basis": "inferred" },
+      "status": "sourced", "src": ["n1"]
+    },
+    {
+      "id": "flow",
+      "title": "Build the flow: Basic auth on the token call",
+      "detail": "POST to the token endpoint with a JSON body, client ID and secret base64-encoded in an Authorization: Basic header. Store both tokens and the bot_id.",
+      "owner": "agent", "kind": "do", "minutes": { "lo": 20, "hi": 45, "basis": "inferred" },
+      "status": "sourced", "src": ["n2"]
+    },
+    {
+      "id": "review",
+      "title": "Submit for review, maybe",
+      "detail": "The docs say the full authorize URL appears after the connection is submitted for review. They don't say what is reviewed, whether it blocks testing in your own workspace, or how long it takes.",
+      "owner": "provider", "kind": "gate", "minutes": null,
+      "status": "unknown", "src": ["n2"]
+    },
+    {
+      "id": "list",
+      "title": "Optional: Marketplace listing",
+      "detail": "Managed under Listings. The review process is described in a separate guide we haven't read.",
+      "owner": "provider", "kind": "gate", "minutes": null,
+      "status": "unknown", "src": ["n1"]
+    }
+  ],
+  "nuances": [
+    { "text": "Installation scope is set at creation and can't be changed. Selected-workspaces connections can't be listed on the Marketplace.", "status": "sourced", "src": ["n1"] },
+    { "text": "Every refresh returns a new access token and a new refresh token. Store the latest pair or you lose access.", "status": "sourced", "src": ["n2"] },
+    { "text": "Authorization is per user. Each member who wants to use the connection completes the flow.", "status": "sourced", "src": ["n2"] },
+    { "text": "Users can only share pages they have full access to, and the connection sees only the pages picked during consent.", "status": "sourced", "src": ["n2"] },
+    { "text": "Include redirect_uri on the token call if it was in the authorize URL or the connection has several.", "status": "sourced", "src": ["n2"] },
+    { "text": "Composio's Notion guide lists redirect URI rules: HTTPS, exact match, no trailing slash, no wildcards or fragments.", "status": "sourced", "src": ["n3"], "note": "Secondary. Notion's own page only links to general redirect guidance." },
+    { "text": "Access token lifetime.", "status": "unknown", "src": [], "note": "The authorization page doesn't state how long access tokens last." }
+  ],
+  "blockers": [
+    { "symptom": "Lost access after a refresh", "cause": "The old refresh token was discarded. Each refresh issues a new pair.", "fix": "Persist the refresh response atomically.", "status": "sourced", "src": ["n2"] },
+    { "symptom": "Can't list in the Marketplace", "cause": "Connection was created with Selected workspaces only.", "fix": "Create a new connection with Any workspace.", "status": "sourced", "src": ["n1"] },
+    { "symptom": "Connected but no pages are visible", "cause": "The user closed the flow before finishing the page picker.", "fix": "Handle the abandoned flow and ask them to reconnect.", "status": "sourced", "src": ["n2"] }
+  ],
+  "handoff": {
+    "agent": [
+      "Write the authorize and token calls, including Basic auth",
+      "Persist refresh responses safely",
+      "Handle denial and error redirects in the UI",
+      "Check the redirect URI against Notion's rules before you paste it"
+    ],
+    "you": [
+      "Create the connection and choose the installation scope",
+      "Copy credentials into your secret store",
+      "Find out what the review step actually checks"
+    ]
+  },
+  "prepare": {
+    "consoleUrl": "https://app.notion.com/developers/connections",
+    "authorizeUrl": "https://api.notion.com/v1/oauth/authorize",
+    "tokenUrl": "https://api.notion.com/v1/oauth/token",
+    "envPrefix": "NOTION",
+    "redirect": { "https": "unknown", "exactMatch": "unknown", "maxUris": null, "rule": "Configured in the developer portal. Notion's page doesn't state rules. Composio's guide says HTTPS, exact match, no trailing slash." },
+    "scopes": [
+      { "name": "Read content", "gated": false, "note": "Capability chosen at creation" },
+      { "name": "Update content", "gated": false, "note": "Capability chosen at creation" },
+      { "name": "Insert content", "gated": false, "note": "Capability chosen at creation" }
+    ],
+    "submission": [
+      "Marketplace listing: descriptions, categories, images under Listings"
+    ]
+  },
+  "sources": {
+    "n1": { "title": "Public connections (Notion developers)", "url": "https://developers.notion.com/guides/get-started/public-integrations", "kind": "official", "retrieved": "2026-10-29", "note": "Notion renamed integrations to connections. The URL still says integrations." },
+    "n2": { "title": "Authorization (Notion developers)", "url": "https://developers.notion.com/docs/authorization", "kind": "official", "retrieved": "2026-10-29" },
+    "n3": { "title": "Notion OAuth2 setup in Composio", "url": "https://composio.dev/auth/notion", "kind": "secondary", "retrieved": "2026-10-29", "note": "Composio guide. Also a useful reference for the format of a good setup guide." }
+  }
+}

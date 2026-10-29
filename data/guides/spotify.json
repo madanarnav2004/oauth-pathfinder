@@ -1,0 +1,90 @@
+{
+  "slug": "spotify",
+  "name": "Spotify",
+  "domain": "spotify.com",
+  "label": "25 friends and a dream",
+  "summary": "Anyone can make an app in minutes. Whether you can serve more than a few dozen users is a review Spotify runs on commercial grounds, and its rules were in flux in 2026.",
+  "difficulty": 3,
+  "blocker": "Development mode caps you at an invited-user list. Going past it means a quota-extension review that weighs commercial interest.",
+  "handsOn": { "lo": 30, "hi": 90, "basis": "inferred" },
+  "wait": null,
+  "steps": [
+    {
+      "id": "create",
+      "title": "Create an app in the Developer Dashboard",
+      "detail": "From the dashboard. The creation form wasn't in the pages we could read.",
+      "owner": "you", "kind": "do", "minutes": { "lo": 5, "hi": 15, "basis": "inferred" },
+      "status": "inferred", "src": []
+    },
+    {
+      "id": "redirects",
+      "title": "Register redirect URIs and build the flow",
+      "detail": "Not covered by the sources we reached. Treat as standard authorization code with PKCE or client secret.",
+      "owner": "agent", "kind": "do", "minutes": { "lo": 25, "hi": 75, "basis": "inferred" },
+      "status": "inferred", "src": []
+    },
+    {
+      "id": "devmode",
+      "title": "Live in Development mode first",
+      "detail": "A 2021 Spotify post says new apps start here, with full Web API access and up to 25 invited users listed in the dashboard.",
+      "owner": "you", "kind": "do", "minutes": null,
+      "status": "sourced", "src": ["s1"]
+    },
+    {
+      "id": "extended",
+      "title": "Request Extended Quota Mode",
+      "detail": "Per the same post: Spotify reviews and tests the app, wants a working demo, and considers commercial interest and monetisation. Scopes are then locked to what was approved.",
+      "owner": "provider", "kind": "gate", "minutes": null,
+      "status": "sourced", "src": ["s1"]
+    },
+    {
+      "id": "2026",
+      "title": "Check what changed in 2026",
+      "detail": "Spotify announced an update to developer access in February 2026 and a community thread discusses it. We could read the thread's header but not the post, so the current user limits and thresholds are unknown.",
+      "owner": "you", "kind": "do", "minutes": null,
+      "status": "unknown", "src": ["s2"]
+    }
+  ],
+  "nuances": [
+    { "text": "Development mode: full Web API access, no extra approval, up to 25 invited users.", "status": "sourced", "src": ["s1"], "note": "From a May 2021 post. It says itself that it may be outdated." },
+    { "text": "Extended Quota Mode removes the user cap and raises rate limits. A scope change needs another request.", "status": "sourced", "src": ["s1"], "note": "2021." },
+    { "text": "Current development-mode limits, any premium requirement, and extended-quota thresholds.", "status": "unknown", "src": ["s2"], "note": "Subject of the February 2026 update. The announcement itself wasn't readable." },
+    { "text": "How long a quota review takes.", "status": "unknown", "src": [], "note": "The 2021 post gives no timeline." }
+  ],
+  "blockers": [
+    { "symptom": "A user outside your list gets a 403 or can't authorize", "cause": "Development mode limits access to invited users.", "fix": "Add them in the dashboard, or request a quota extension.", "status": "sourced", "src": ["s1"] },
+    { "symptom": "Extension declined", "cause": "Spotify judged the app on commercial interest and testing.", "fix": "Spotify says it tries to give actionable feedback. Resubmit with it addressed.", "status": "sourced", "src": ["s1"] }
+  ],
+  "handoff": {
+    "agent": [
+      "Build and test the flow with your invited users",
+      "Prepare the demo and description a reviewer needs",
+      "Keep a list of the scopes you need before you ask, since scopes lock after approval"
+    ],
+    "you": [
+      "Create the app",
+      "Read Spotify's current developer access announcement, we couldn't",
+      "Submit the extension request"
+    ]
+  },
+  "prepare": {
+    "consoleUrl": "https://developer.spotify.com/dashboard",
+    "authorizeUrl": "https://accounts.spotify.com/authorize",
+    "tokenUrl": "https://accounts.spotify.com/api/token",
+    "envPrefix": "SPOTIFY",
+    "redirect": { "https": "unknown", "exactMatch": "unknown", "maxUris": null, "rule": "Register redirect URIs in the dashboard. Rules weren't in the pages we reached." },
+    "scopes": [
+      { "name": "user-read-email", "gated": false, "note": "Profile email" },
+      { "name": "playlist-read-private", "gated": false, "note": "Locked to approved scopes after Extended Quota" }
+    ],
+    "submission": [
+      "A working demo",
+      "App details, usage and intended monetisation",
+      "The list of scopes you need"
+    ]
+  },
+  "sources": {
+    "s1": { "title": "Improving the developer and user experience for third-party apps", "url": "https://developer.spotify.com/blog/2021-05-27-improving-the-developer-and-user-experience-for-third-party-apps", "kind": "official", "retrieved": "2026-10-29", "note": "Published May 27, 2021. States it may be outdated." },
+    "s2": { "title": "February 2026 Spotify for Developers update (community thread)", "url": "https://community.spotify.com/t5/Spotify-for-Developers/February-2026-Spotify-for-Developers-update-thread/m-p/7330564", "kind": "official", "retrieved": "2026-10-29", "note": "Only the thread header was readable. The linked announcement was not." }
+  }
+}
