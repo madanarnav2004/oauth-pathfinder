@@ -1,1 +1,186 @@
-{}
+{
+  "github": {
+    "checkedAt": "2026-10-29T18:08:33.020Z",
+    "results": [
+      {
+        "name": "authorize",
+        "url": "https://github.com/login/oauth/authorize",
+        "method": "GET",
+        "status": 302,
+        "error": null,
+        "location": "github.com/login",
+        "ms": 419
+      },
+      {
+        "name": "token",
+        "url": "https://github.com/login/oauth/access_token",
+        "method": "POST",
+        "status": 404,
+        "error": "Not Found",
+        "location": null,
+        "ms": 388
+      }
+    ]
+  },
+  "slack": {
+    "checkedAt": "2026-10-29T18:08:33.806Z",
+    "results": [
+      {
+        "name": "authorize",
+        "url": "https://slack.com/oauth/v2/authorize",
+        "method": "GET",
+        "status": 200,
+        "error": null,
+        "location": null,
+        "ms": 418
+      },
+      {
+        "name": "token",
+        "url": "https://slack.com/api/oauth.v2.access",
+        "method": "POST",
+        "status": 200,
+        "error": "invalid_code",
+        "location": null,
+        "ms": 367
+      }
+    ]
+  },
+  "notion": {
+    "checkedAt": "2026-10-29T18:08:34.540Z",
+    "results": [
+      {
+        "name": "authorize",
+        "url": "https://api.notion.com/v1/oauth/authorize",
+        "method": "GET",
+        "status": 302,
+        "error": null,
+        "location": "app.notion.com/install-integration",
+        "ms": 403
+      },
+      {
+        "name": "token",
+        "url": "https://api.notion.com/v1/oauth/token",
+        "method": "POST",
+        "status": 401,
+        "error": "invalid_client",
+        "location": null,
+        "ms": 331
+      }
+    ]
+  },
+  "discord": {
+    "checkedAt": "2026-10-29T18:08:35.506Z",
+    "results": [
+      {
+        "name": "authorize",
+        "url": "https://discord.com/oauth2/authorize",
+        "method": "GET",
+        "status": 200,
+        "error": null,
+        "location": null,
+        "ms": 499
+      },
+      {
+        "name": "token",
+        "url": "https://discord.com/api/oauth2/token",
+        "method": "POST",
+        "status": 400,
+        "error": null,
+        "location": null,
+        "ms": 467
+      }
+    ]
+  },
+  "spotify": {
+    "checkedAt": "2026-10-29T18:08:36.168Z",
+    "results": [
+      {
+        "name": "authorize",
+        "url": "https://accounts.spotify.com/authorize",
+        "method": "GET",
+        "status": 303,
+        "error": null,
+        "location": "accounts.spotify.com/en/login",
+        "ms": 375
+      },
+      {
+        "name": "token",
+        "url": "https://accounts.spotify.com/api/token",
+        "method": "POST",
+        "status": 400,
+        "error": "invalid_client",
+        "location": null,
+        "ms": 285
+      }
+    ]
+  },
+  "linkedin": {
+    "checkedAt": "2026-10-29T18:08:37.089Z",
+    "results": [
+      {
+        "name": "authorize",
+        "url": "https://www.linkedin.com/oauth/v2/authorization",
+        "method": "GET",
+        "status": 200,
+        "error": null,
+        "location": null,
+        "ms": 459
+      },
+      {
+        "name": "token",
+        "url": "https://www.linkedin.com/oauth/v2/accessToken",
+        "method": "POST",
+        "status": 401,
+        "error": "invalid_request",
+        "location": null,
+        "ms": 462
+      }
+    ]
+  },
+  "google": {
+    "checkedAt": "2026-10-29T18:08:37.698Z",
+    "results": [
+      {
+        "name": "authorize",
+        "url": "https://accounts.google.com/o/oauth2/v2/auth",
+        "method": "GET",
+        "status": 302,
+        "error": null,
+        "location": "accounts.google.com/signin/oauth/error",
+        "ms": 346
+      },
+      {
+        "name": "token",
+        "url": "https://oauth2.googleapis.com/token",
+        "method": "POST",
+        "status": 400,
+        "error": "invalid_request",
+        "location": null,
+        "ms": 261
+      }
+    ]
+  },
+  "meta": {
+    "checkedAt": "2026-10-29T18:08:38.453Z",
+    "results": [
+      {
+        "name": "authorize",
+        "url": "https://www.facebook.com/dialog/oauth",
+        "method": "GET",
+        "status": 200,
+        "error": null,
+        "location": null,
+        "ms": 409
+      },
+      {
+        "name": "token",
+        "url": "https://graph.facebook.com/oauth/access_token",
+        "method": "POST",
+        "status": 400,
+        "error": "OAuthException",
+        "location": null,
+        "ms": 345
+      }
+    ]
+  }
+}
