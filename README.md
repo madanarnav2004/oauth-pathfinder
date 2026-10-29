@@ -12,9 +12,11 @@ Then ask it in plain words: *"how hard is it to get a Slack OAuth app approved?"
 
 Live: **https://oauth-pathfinder-topaz.vercel.app** · Built for the Composio APM (Integrations) take-home.
 
-![The guide rendered as a card inside an MCP Apps host](docs/img/card.png)
+![Pathfinder Google OAuth guide displayed as an inline card in a Codex chat](docs/img/codex-inline-card.png)
 
-*The card, rendered by `npm run verify:card` in a real host. Not a mockup.*
+*Pathfinder’s Google guide rendered inline in Codex after the prompt shown in the chat.*
+
+The [reference-host screenshot](docs/img/card.png) is captured by `npm run verify:card`.
 
 ## What your agent gets
 
