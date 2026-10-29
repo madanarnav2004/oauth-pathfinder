@@ -4,74 +4,215 @@
   "domain": "github.com",
   "label": "git push --set-upstream origin prod",
   "summary": "Self-serve and nobody reviews it. The only humans in your way are the organization owners of your customers.",
+  "verdict": "An hour of setup, and nobody reviews it. The only people who can hold you up are your customers' own org owners.",
   "difficulty": 1,
   "blocker": "Customers in organizations with OAuth app restrictions will see only public data until an org owner approves you.",
-  "handsOn": { "lo": 30, "hi": 75, "basis": "inferred" },
-  "wait": { "lo": 0, "hi": 0, "basis": "inferred" },
+  "handsOn": {
+    "lo": 30,
+    "hi": 75,
+    "basis": "inferred"
+  },
+  "wait": {
+    "lo": 0,
+    "hi": 0,
+    "basis": "inferred"
+  },
   "steps": [
     {
       "id": "open",
       "title": "Open Developer settings",
       "detail": "Under your account, or an organization you administer: Settings, Developer settings, OAuth apps, New OAuth App. Create it under an organization if the company, not you, should own it.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 2, "hi": 5, "basis": "inferred" },
-      "status": "sourced", "src": ["gh1"]
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 2,
+        "hi": 5,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "gh1"
+      ]
     },
     {
       "id": "form",
       "title": "Fill in the registration form",
       "detail": "Four fields and one checkbox. The callback URL is the one that matters, and you only get one.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 5, "hi": 15, "basis": "inferred" },
-      "status": "sourced", "src": ["gh1"],
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 5,
+        "hi": 15,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "gh1"
+      ],
       "fields": [
-        { "label": "Application name", "value": "Public. Don't put internal URLs here." },
-        { "label": "Homepage URL", "value": "Full URL of your app's site" },
-        { "label": "Callback URL", "value": "Exactly one per OAuth app" },
-        { "label": "Device Flow", "value": "Tick only if you use the device flow" }
+        {
+          "label": "Application name",
+          "value": "Public. Don't put internal URLs here."
+        },
+        {
+          "label": "Homepage URL",
+          "value": "Full URL of your app's site"
+        },
+        {
+          "label": "Callback URL",
+          "value": "Exactly one per OAuth app"
+        },
+        {
+          "label": "Device Flow",
+          "value": "Tick only if you use the device flow"
+        }
       ]
     },
     {
       "id": "creds",
       "title": "Copy the client ID, generate a client secret",
       "detail": "The page we read doesn't describe credentials, so this is from how the console behaves in practice. Put both in your secret store, never in the repo.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 2, "hi": 5, "basis": "inferred" },
-      "status": "inferred", "src": []
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 2,
+        "hi": 5,
+        "basis": "inferred"
+      },
+      "status": "inferred",
+      "src": []
     },
     {
       "id": "wire",
       "title": "Wire the callback and request the narrowest scopes",
       "detail": "Add the callback route and read the credentials from env. Scopes are coarse: you can't scope source access to read-only, so ask only for what the feature needs.",
-      "owner": "agent", "kind": "do", "minutes": { "lo": 15, "hi": 40, "basis": "inferred" },
-      "status": "sourced", "src": ["gh2"]
+      "owner": "agent",
+      "kind": "do",
+      "minutes": {
+        "lo": 15,
+        "hi": 40,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "gh2"
+      ]
     },
     {
       "id": "test",
       "title": "Authorize against your own account",
       "detail": "Your email must be verified before GitHub lets you authorize any OAuth app. Run the flow once end to end before you share anything.",
-      "owner": "agent", "kind": "do", "minutes": { "lo": 5, "hi": 15, "basis": "inferred" },
-      "status": "sourced", "src": ["gh2"]
+      "owner": "agent",
+      "kind": "do",
+      "minutes": {
+        "lo": 5,
+        "hi": 15,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "gh2"
+      ]
     },
     {
       "id": "orgs",
       "title": "Customers in restricted orgs: an owner has to approve you",
       "detail": "Restrictions are on by default for new organizations. Until an owner approves, your app gets public resources only. How long that takes depends on the owner, not on GitHub.",
-      "owner": "provider", "kind": "gate", "minutes": null,
-      "status": "sourced", "src": ["gh3", "gh2"]
+      "owner": "provider",
+      "kind": "gate",
+      "minutes": null,
+      "status": "sourced",
+      "src": [
+        "gh3",
+        "gh2"
+      ]
     }
   ],
   "nuances": [
-    { "text": "An OAuth app has a single callback URL. GitHub Apps can have several.", "status": "sourced", "src": ["gh1"], "note": "Practical effect: register a second OAuth app for localhost." },
-    { "text": "OAuth apps act only on behalf of a user, never as an installation.", "status": "sourced", "src": ["gh1"] },
-    { "text": "A token can't exceed its owner's access. An admin:org token still has no org admin rights if the user isn't an owner.", "status": "sourced", "src": ["gh2"] },
-    { "text": "Up to 10 tokens per user, app and scope set. The 11th revokes an old one. Over 10 creations in an hour triggers a re-authorization prompt instead.", "status": "sourced", "src": ["gh2"] },
-    { "text": "SAML SSO orgs need an active SAML session each time a user authorizes.", "status": "sourced", "src": ["gh2"] },
-    { "text": "Neither page we read mentions a review or approval step for the provider side.", "status": "inferred", "src": [], "note": "That is absence of a mention, not a statement that none exists." },
-    { "text": "For new integrations a GitHub App is usually the better fit: finer permissions, expiring tokens, per-repo installs.", "status": "inferred", "src": [], "note": "Our read, not from the pages above. Worth checking before you commit." }
+    {
+      "text": "An OAuth app has a single callback URL. GitHub Apps can have several.",
+      "status": "sourced",
+      "src": [
+        "gh1"
+      ],
+      "note": "Practical effect: register a second OAuth app for localhost."
+    },
+    {
+      "text": "OAuth apps act only on behalf of a user, never as an installation.",
+      "status": "sourced",
+      "src": [
+        "gh1"
+      ]
+    },
+    {
+      "text": "A token can't exceed its owner's access. An admin:org token still has no org admin rights if the user isn't an owner.",
+      "status": "sourced",
+      "src": [
+        "gh2"
+      ]
+    },
+    {
+      "text": "Up to 10 tokens per user, app and scope set. The 11th revokes an old one. Over 10 creations in an hour triggers a re-authorization prompt instead.",
+      "status": "sourced",
+      "src": [
+        "gh2"
+      ]
+    },
+    {
+      "text": "SAML SSO orgs need an active SAML session each time a user authorizes.",
+      "status": "sourced",
+      "src": [
+        "gh2"
+      ]
+    },
+    {
+      "text": "Neither page we read mentions a review or approval step for the provider side.",
+      "status": "inferred",
+      "src": [],
+      "note": "That is absence of a mention, not a statement that none exists."
+    },
+    {
+      "text": "For new integrations a GitHub App is usually the better fit: finer permissions, expiring tokens, per-repo installs.",
+      "status": "inferred",
+      "src": [],
+      "note": "Our read, not from the pages above. Worth checking before you commit."
+    }
   ],
   "blockers": [
-    { "symptom": "redirect_uri mismatch on authorize", "cause": "The callback in your request doesn't match the one registered. With one callback per app, local and prod collide.", "fix": "Register a separate OAuth app per environment.", "status": "inferred", "src": [] },
-    { "symptom": "App can't see an org's private repos", "cause": "The org restricts OAuth apps and nobody approved yours.", "fix": "Ask an owner to approve it. Users can send an approval request from the authorization page.", "status": "sourced", "src": ["gh3"] },
-    { "symptom": "Users keep getting the authorize screen again", "cause": "More than 10 token creations per hour for the same user, app and scopes.", "fix": "Store and reuse tokens instead of re-running the flow.", "status": "sourced", "src": ["gh2"] },
-    { "symptom": "403 on an org with SAML SSO", "cause": "No active SAML session when the user authorized.", "fix": "Revoke the app, sign in to the org to start a SAML session, authorize again.", "status": "sourced", "src": ["gh2"] }
+    {
+      "symptom": "redirect_uri mismatch on authorize",
+      "cause": "The callback in your request doesn't match the one registered. With one callback per app, local and prod collide.",
+      "fix": "Register a separate OAuth app per environment.",
+      "status": "inferred",
+      "src": []
+    },
+    {
+      "symptom": "App can't see an org's private repos",
+      "cause": "The org restricts OAuth apps and nobody approved yours.",
+      "fix": "Ask an owner to approve it. Users can send an approval request from the authorization page.",
+      "status": "sourced",
+      "src": [
+        "gh3"
+      ]
+    },
+    {
+      "symptom": "Users keep getting the authorize screen again",
+      "cause": "More than 10 token creations per hour for the same user, app and scopes.",
+      "fix": "Store and reuse tokens instead of re-running the flow.",
+      "status": "sourced",
+      "src": [
+        "gh2"
+      ]
+    },
+    {
+      "symptom": "403 on an org with SAML SSO",
+      "cause": "No active SAML session when the user authorized.",
+      "fix": "Revoke the app, sign in to the org to start a SAML session, authorize again.",
+      "status": "sourced",
+      "src": [
+        "gh2"
+      ]
+    }
   ],
   "handoff": {
     "agent": [
@@ -91,17 +232,51 @@
     "authorizeUrl": "https://github.com/login/oauth/authorize",
     "tokenUrl": "https://github.com/login/oauth/access_token",
     "envPrefix": "GITHUB",
-    "redirect": { "https": "unknown", "exactMatch": "unknown", "maxUris": 1, "rule": "One callback URL per OAuth app. Use one app per environment." },
+    "redirect": {
+      "https": "unknown",
+      "exactMatch": "unknown",
+      "maxUris": 1,
+      "rule": "One callback URL per OAuth app. Use one app per environment."
+    },
     "scopes": [
-      { "name": "read:user", "gated": false, "note": "Profile" },
-      { "name": "user:email", "gated": false, "note": "Private email addresses, read-only" },
-      { "name": "repo", "gated": false, "note": "Full private repo access. Restricted orgs withhold it until approved." }
+      {
+        "name": "read:user",
+        "gated": false,
+        "note": "Profile"
+      },
+      {
+        "name": "user:email",
+        "gated": false,
+        "note": "Private email addresses, read-only"
+      },
+      {
+        "name": "repo",
+        "gated": false,
+        "note": "Full private repo access. Restricted orgs withhold it until approved."
+      }
     ],
     "submission": []
   },
   "sources": {
-    "gh1": { "title": "Creating an OAuth app (Enterprise Server 3.8 docs)", "url": "https://docs.github.com/en/enterprise-server@3.8/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app", "kind": "official", "retrieved": "2026-10-29", "note": "The github.com version of this page wasn't in our results. Enterprise Server docs can lag the cloud product." },
-    "gh2": { "title": "Authorizing OAuth apps", "url": "https://docs.github.com/en/apps/oauth-apps/using-oauth-apps/authorizing-oauth-apps", "kind": "official", "retrieved": "2026-10-29", "note": "A user-facing page. Redirect matching and token expiry rules live on pages we didn't read." },
-    "gh3": { "title": "About OAuth app access restrictions", "url": "https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions", "kind": "official", "retrieved": "2026-10-29" }
+    "gh1": {
+      "title": "Creating an OAuth app (Enterprise Server 3.8 docs)",
+      "url": "https://docs.github.com/en/enterprise-server@3.8/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app",
+      "kind": "official",
+      "retrieved": "2026-10-29",
+      "note": "The github.com version of this page wasn't in our results. Enterprise Server docs can lag the cloud product."
+    },
+    "gh2": {
+      "title": "Authorizing OAuth apps",
+      "url": "https://docs.github.com/en/apps/oauth-apps/using-oauth-apps/authorizing-oauth-apps",
+      "kind": "official",
+      "retrieved": "2026-10-29",
+      "note": "A user-facing page. Redirect matching and token expiry rules live on pages we didn't read."
+    },
+    "gh3": {
+      "title": "About OAuth app access restrictions",
+      "url": "https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions",
+      "kind": "official",
+      "retrieved": "2026-10-29"
+    }
   }
 }

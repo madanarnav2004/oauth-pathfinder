@@ -1,13 +1,17 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { listGuides } from "@/lib/guides";
-import { DIFFICULTY } from "@/lib/render";
-import { fmtSpan } from "@/lib/time";
-import type { Span } from "@/lib/schema";
+import { verdict } from "@/lib/render";
+import { CopyButton } from "@/components/Client";
 
-const t = (s: Span | null) => (s ? (s.hi === 0 ? "none" : fmtSpan(s)) : null);
+export const dynamic = "force-dynamic";
 
-export default function Home() {
-  const guides = listGuides();
+export default async function Home() {
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
+  const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
+  const install = `claude mcp add --transport http pathfinder ${proto}://${host}/mcp`;
+
   return (
     <main>
       <h1 className="hero">
@@ -16,47 +20,42 @@ export default function Home() {
         an OAuth app approved?
       </h1>
       <p className="lede">
-        Type an app. If it&apos;s one of the eight we checked by hand, you get the answer now. If not, an agent reads the docs, tests what it can, and tells you what it couldn&apos;t confirm.
-      </p>
-      <form className="ask" action="/new" method="get">
-        <input name="q" placeholder="linear.app, hubspot, github…" aria-label="App name or website" autoComplete="off" autoCapitalize="off" spellCheck={false} required />
-        <button type="submit">look up →</button>
-      </form>
-      <p className="hint">
-        Works in your editor too: <Link href="/agent">add it to Claude Code, Codex or Cursor</Link>.
+        An agent reads the provider&apos;s docs, tries what it can, and tells you plainly what it couldn&apos;t confirm. No invented timelines.
       </p>
 
+      <h2 className="sec">Ask it where you already work</h2>
+      <p className="say">
+        This is mostly an MCP server. Add it once and ask your agent in plain words &mdash; it answers in the chat, so you never come back here.
+      </p>
+      <div className="install">
+        <code>{install}</code>
+        <CopyButton label="copy" text={install} quiet />
+      </div>
+      <p className="hint">
+        <Link href="/agent">Codex, Cursor, VS Code, ChatGPT and Claude.ai</Link> take the same URL.
+      </p>
+
+      <h2 className="sec">Or look one up here</h2>
+      <form className="ask" action="/new" method="get">
+        <input name="q" placeholder="linear.app, hubspot, github…" aria-label="App name or website" autoComplete="off" autoCapitalize="off" spellCheck={false} required />
+        <button type="submit">look it up</button>
+      </form>
+      <p className="hint">Anything outside the eight below gets researched live, in about a minute.</p>
+
       <h2 className="sec" id="library">
-        library · easy to hard
+        Eight we checked by hand
       </h2>
       <div className="lib">
-        <div className="head">
-          <span>app</span>
-          <span>difficulty</span>
-          <span>hands-on</span>
-          <span>waiting</span>
-        </div>
-        {guides.map((g) => (
+        {listGuides().map((g) => (
           <Link key={g.slug} href={`/g/${g.slug}`} className="row">
-            <span className="who">
-              <span className="nm">{g.name.split(" (")[0]}</span>
-              <span className="lb">{g.label}</span>
-            </span>
-            <span className="df">
-              <span className="pf-dots" aria-hidden="true">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <i key={i} className={i <= g.difficulty ? "on" : ""} />
-                ))}
-              </span>{" "}
-              {DIFFICULTY[g.difficulty]}
-            </span>
-            <span className="tm">{t(g.handsOn) ?? "?"}</span>
-            <span className={`tm${g.wait ? "" : " fogcell"}`}>{t(g.wait) ?? "unknown"}</span>
+            <span className="nm">{g.name.split(" (")[0]}</span>
+            <span className="vd">{verdict(g)}</span>
           </Link>
         ))}
       </div>
-      <p className="hint" style={{ marginTop: "1.2rem" }}>
-        &ldquo;unknown&rdquo; means no source we could read gives a number. We leave it blank on purpose. <Link href="/how-we-checked">What we checked, and what we couldn&apos;t</Link>.
+      <p className="hint lastword">
+        Chosen to be different from each other: one with no review at all, one where the cliff is a user cap, two where approval is a business process.{" "}
+        <Link href="/how-we-checked">What we corrected, and what we couldn&apos;t confirm</Link>.
       </p>
     </main>
   );

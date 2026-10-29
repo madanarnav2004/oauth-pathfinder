@@ -4,57 +4,142 @@
   "domain": "discord.com",
   "label": "gg, until server 100",
   "summary": "Creating an app and an OAuth install link takes a coffee. The cliff is at 100 servers, where privileged intents change shape. We could read the flags but not the approval process.",
+  "verdict": "A coffee to set up. The cliff is at 100 servers, and Discord doesn't document what's on the other side of it.",
   "difficulty": 2,
   "blocker": "Past 100 servers, the privileged intents (presence, members, message content) move to a different flag, and we couldn't find what Discord asks to grant them.",
-  "handsOn": { "lo": 20, "hi": 60, "basis": "inferred" },
+  "handsOn": {
+    "lo": 20,
+    "hi": 60,
+    "basis": "inferred"
+  },
   "wait": null,
   "steps": [
     {
       "id": "create",
       "title": "Create the application in the Developer Portal",
       "detail": "The portal's click-path wasn't in the pages we read. This is from how it behaves in practice.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 3, "hi": 10, "basis": "inferred" },
-      "status": "inferred", "src": []
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 3,
+        "hi": 10,
+        "basis": "inferred"
+      },
+      "status": "inferred",
+      "src": []
     },
     {
       "id": "redirects",
       "title": "Add redirect URIs",
       "detail": "An application carries a list of redirect URIs. Add every callback you'll use, per environment.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 3, "hi": 10, "basis": "inferred" },
-      "status": "sourced", "src": ["d1"]
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 3,
+        "hi": 10,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "d1"
+      ]
     },
     {
       "id": "install",
       "title": "Set install params: scopes and permissions per context",
       "detail": "Default install settings are separate for server installs and user installs. Discord's provided install links are limited to the bot and applications.commands scopes.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 5, "hi": 20, "basis": "inferred" },
-      "status": "sourced", "src": ["d1"]
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 5,
+        "hi": 20,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "d1"
+      ]
     },
     {
       "id": "flow",
       "title": "Implement the code exchange",
       "detail": "Standard authorization code grant. We didn't fetch Discord's OAuth2 reference, so the details of the exchange are not sourced here.",
-      "owner": "agent", "kind": "do", "minutes": { "lo": 15, "hi": 40, "basis": "inferred" },
-      "status": "inferred", "src": []
+      "owner": "agent",
+      "kind": "do",
+      "minutes": {
+        "lo": 15,
+        "hi": 40,
+        "basis": "inferred"
+      },
+      "status": "inferred",
+      "src": []
     },
     {
       "id": "intents",
       "title": "Privileged intents: limited under 100 servers, gated above",
       "detail": "Presence, guild members and message content each have a limited flag for bots in fewer than 100 servers and a full flag for 100 or more. What Discord requires to grant the full flag isn't on the page we read.",
-      "owner": "provider", "kind": "gate", "minutes": null,
-      "status": "unknown", "src": ["d1"]
+      "owner": "provider",
+      "kind": "gate",
+      "minutes": null,
+      "status": "unknown",
+      "src": [
+        "d1"
+      ]
     }
   ],
   "nuances": [
-    { "text": "Only the limited intent flags can be changed through the API.", "status": "sourced", "src": ["d1"] },
-    { "text": "A flag called VERIFICATION_PENDING_GUILD_LIMIT marks unusual growth that blocks verification.", "status": "sourced", "src": ["d1"] },
-    { "text": "Install settings are separate for guild installs and user installs.", "status": "sourced", "src": ["d1"] },
-    { "text": "The server count at which verification becomes required.", "status": "unknown", "src": [], "note": "The page names 100 for intents. It does not state a verification threshold." },
-    { "text": "What verification asks for and how long it takes.", "status": "unknown", "src": [] }
+    {
+      "text": "Only the limited intent flags can be changed through the API.",
+      "status": "sourced",
+      "src": [
+        "d1"
+      ]
+    },
+    {
+      "text": "A flag called VERIFICATION_PENDING_GUILD_LIMIT marks unusual growth that blocks verification.",
+      "status": "sourced",
+      "src": [
+        "d1"
+      ]
+    },
+    {
+      "text": "Install settings are separate for guild installs and user installs.",
+      "status": "sourced",
+      "src": [
+        "d1"
+      ]
+    },
+    {
+      "text": "The server count at which verification becomes required.",
+      "status": "unknown",
+      "src": [],
+      "note": "The page names 100 for intents. It does not state a verification threshold."
+    },
+    {
+      "text": "What verification asks for and how long it takes.",
+      "status": "unknown",
+      "src": []
+    }
   ],
   "blockers": [
-    { "symptom": "Bot stops seeing message content", "cause": "The privileged intent needs the full flag once you pass 100 servers.", "fix": "Apply for the intent before you cross the line, not after.", "status": "inferred", "src": ["d1"] },
-    { "symptom": "Can't get verified despite meeting requirements", "cause": "A growth-limit flag is set on the application.", "fix": "Contact Discord developer support with your growth history.", "status": "inferred", "src": ["d1"] }
+    {
+      "symptom": "Bot stops seeing message content",
+      "cause": "The privileged intent needs the full flag once you pass 100 servers.",
+      "fix": "Apply for the intent before you cross the line, not after.",
+      "status": "inferred",
+      "src": [
+        "d1"
+      ]
+    },
+    {
+      "symptom": "Can't get verified despite meeting requirements",
+      "cause": "A growth-limit flag is set on the application.",
+      "fix": "Contact Discord developer support with your growth history.",
+      "status": "inferred",
+      "src": [
+        "d1"
+      ]
+    }
   ],
   "handoff": {
     "agent": [
@@ -72,16 +157,43 @@
     "authorizeUrl": "https://discord.com/oauth2/authorize",
     "tokenUrl": "https://discord.com/api/oauth2/token",
     "envPrefix": "DISCORD",
-    "redirect": { "https": "unknown", "exactMatch": "unknown", "maxUris": null, "rule": "A list of redirect URIs on the application. Matching rules weren't in the page we read." },
+    "redirect": {
+      "https": "unknown",
+      "exactMatch": "unknown",
+      "maxUris": null,
+      "rule": "A list of redirect URIs on the application. Matching rules weren't in the page we read."
+    },
     "scopes": [
-      { "name": "identify", "gated": false, "note": "Basic user info" },
-      { "name": "guilds", "gated": false, "note": "Servers the user is in" },
-      { "name": "bot, applications.commands", "gated": false, "note": "Install as a bot with slash commands" },
-      { "name": "Message content intent", "gated": true, "note": "Limited under 100 servers, gated above" }
+      {
+        "name": "identify",
+        "gated": false,
+        "note": "Basic user info"
+      },
+      {
+        "name": "guilds",
+        "gated": false,
+        "note": "Servers the user is in"
+      },
+      {
+        "name": "bot, applications.commands",
+        "gated": false,
+        "note": "Install as a bot with slash commands"
+      },
+      {
+        "name": "Message content intent",
+        "gated": true,
+        "note": "Limited under 100 servers, gated above"
+      }
     ],
     "submission": []
   },
   "sources": {
-    "d1": { "title": "Application resource (Discord developer docs)", "url": "https://docs.discord.com/developers/resources/application", "kind": "official", "retrieved": "2026-10-29", "note": "An API reference page, not a setup guide." }
+    "d1": {
+      "title": "Application resource (Discord developer docs)",
+      "url": "https://docs.discord.com/developers/resources/application",
+      "kind": "official",
+      "retrieved": "2026-10-29",
+      "note": "An API reference page, not a setup guide."
+    }
   }
 }

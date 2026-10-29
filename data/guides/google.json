@@ -4,82 +4,243 @@
   "domain": "google.com",
   "label": "works on my machine, until user 101",
   "summary": "Sign in with Google is easy. The moment you ask for Gmail, Drive or Calendar, you're in a verification queue, and for the restricted ones, a paid security assessment.",
+  "verdict": "Half a day of setup, then weeks in a verification queue. Touch Gmail and it's an annual paid security assessment on top.",
   "difficulty": 4,
   "blocker": "Sensitive or restricted scopes mean verification, and past 100 new users unverified you are locked out for the project's lifetime.",
-  "handsOn": { "lo": 240, "hi": 960, "basis": "inferred" },
-  "wait": { "lo": 4320, "hi": 190080, "basis": "reported" },
+  "handsOn": {
+    "lo": 240,
+    "hi": 960,
+    "basis": "inferred"
+  },
+  "wait": {
+    "lo": 4320,
+    "hi": 190080,
+    "basis": "reported"
+  },
   "steps": [
     {
       "id": "project",
       "title": "Open the Google Auth Platform in a Cloud project",
       "detail": "Google's console splits this into: get started, audience, branding, clients and data access. We could read the section names, not a click-by-click.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 10, "hi": 30, "basis": "inferred" },
-      "status": "sourced", "src": ["g1"]
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 10,
+        "hi": 30,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "g1"
+      ]
     },
     {
       "id": "audience",
       "title": "Pick the audience",
       "detail": "External means any Google account. Internal means members of your Cloud organization only, and everyone else gets org_internal. Start External in Testing.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 5, "hi": 15, "basis": "inferred" },
-      "status": "sourced", "src": ["g1"]
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 5,
+        "hi": 15,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "g1"
+      ]
     },
     {
       "id": "branding",
       "title": "Branding: name, logo, privacy policy, homepage",
       "detail": "A privacy policy URL is required for verification. The domain has to be verified in Search Console by a Project Owner or Editor who is also a verified property owner.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 30, "hi": 120, "basis": "inferred" },
-      "status": "sourced", "src": ["g2"]
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 30,
+        "hi": 120,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "g2"
+      ]
     },
     {
       "id": "scopes",
       "title": "Declare data access (scopes)",
       "detail": "This choice sets your whole timeline. Sign-in scopes are free. Sensitive scopes need verification. Restricted scopes need verification plus a security assessment.",
-      "owner": "agent", "kind": "do", "minutes": { "lo": 15, "hi": 45, "basis": "inferred" },
-      "status": "sourced", "src": ["g1", "g2", "g4"]
+      "owner": "agent",
+      "kind": "do",
+      "minutes": {
+        "lo": 15,
+        "hi": 45,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "g1",
+        "g2",
+        "g4"
+      ]
     },
     {
       "id": "client",
       "title": "Create the OAuth client and add redirect URIs",
       "detail": "Web application client with your callback. Changing redirect URIs or origins after verification triggers re-verification, so settle them first.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 10, "hi": 20, "basis": "inferred" },
-      "status": "sourced", "src": ["g2"]
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 10,
+        "hi": 20,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "g2"
+      ]
     },
     {
       "id": "testing",
       "title": "Test with up to 100 test users",
       "detail": "In Testing, only listed users can authorize, and their authorizations (refresh tokens included) expire after 7 days.",
-      "owner": "agent", "kind": "do", "minutes": { "lo": 30, "hi": 120, "basis": "inferred" },
-      "status": "sourced", "src": ["g1"]
+      "owner": "agent",
+      "kind": "do",
+      "minutes": {
+        "lo": 30,
+        "hi": 120,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "g1"
+      ]
     },
     {
       "id": "verify",
       "title": "Publish and submit for verification",
       "detail": "Publish the app, then submit: privacy policy, domain proof, and per-scope justification with a demo video showing each scope in use. Until approved, users see the unverified-app screen.",
-      "owner": "provider", "kind": "gate", "minutes": { "lo": 4320, "hi": 60480, "basis": "reported" },
-      "status": "sourced", "src": ["g2", "g4"]
+      "owner": "provider",
+      "kind": "gate",
+      "minutes": {
+        "lo": 4320,
+        "hi": 60480,
+        "basis": "reported"
+      },
+      "status": "sourced",
+      "src": [
+        "g2",
+        "g4"
+      ]
     },
     {
       "id": "casa",
       "title": "Restricted scopes only: pass the security assessment",
       "detail": "Gmail-class scopes need an independent assessment (CASA) and a Letter of Validation, renewed every 12 months. A vendor article puts weeks to months on it.",
-      "owner": "provider", "kind": "gate", "minutes": { "lo": 20160, "hi": 129600, "basis": "reported" },
-      "status": "sourced", "src": ["g3", "g4"]
+      "owner": "provider",
+      "kind": "gate",
+      "minutes": {
+        "lo": 20160,
+        "hi": 129600,
+        "basis": "reported"
+      },
+      "status": "sourced",
+      "src": [
+        "g3",
+        "g4"
+      ]
     }
   ],
   "nuances": [
-    { "text": "If you only ask for openid, email and profile, or use Sign in with Google, you skip the test-user list, the warning screen and the 7-day expiry.", "status": "sourced", "src": ["g1"], "note": "The most useful sentence in Google's docs for most apps." },
-    { "text": "Unverified apps are capped at 100 new users in total after the warning screen appears. The cap lasts for the life of the project and can't be reset.", "status": "sourced", "src": ["g1", "g2"] },
-    { "text": "Re-verification is needed when you add redirect URLs or JavaScript origins, rename the product, or change clients or scopes after approval.", "status": "sourced", "src": ["g2"] },
-    { "text": "Internal-only apps, apps still in development or testing, and OAuth-based plugins don't need verification.", "status": "sourced", "src": ["g2"] },
-    { "text": "Restricted-scope apps repeat the security assessment every 12 months, counted from the previous Letter of Validation.", "status": "sourced", "src": ["g3"] },
-    { "text": "Google references a $15,000 to $75,000 range for the security assessment.", "status": "sourced", "src": ["g4"], "note": "Secondhand, from a vendor who sells assessments, in a 2021 article. Confirm the current price with an assessor." },
-    { "text": "Google's own published review timeline.", "status": "unknown", "src": [], "note": "Not on any Google page we could open. Every timeline above is from the vendor article." }
+    {
+      "text": "If you only ask for openid, email and profile, or use Sign in with Google, you skip the test-user list, the warning screen and the 7-day expiry.",
+      "status": "sourced",
+      "src": [
+        "g1"
+      ],
+      "note": "The most useful sentence in Google's docs for most apps."
+    },
+    {
+      "text": "Unverified apps are capped at 100 new users in total after the warning screen appears. The cap lasts for the life of the project and can't be reset.",
+      "status": "sourced",
+      "src": [
+        "g1",
+        "g2"
+      ]
+    },
+    {
+      "text": "Re-verification is needed when you add redirect URLs or JavaScript origins, rename the product, or change clients or scopes after approval.",
+      "status": "sourced",
+      "src": [
+        "g2"
+      ]
+    },
+    {
+      "text": "Internal-only apps, apps still in development or testing, and OAuth-based plugins don't need verification.",
+      "status": "sourced",
+      "src": [
+        "g2"
+      ]
+    },
+    {
+      "text": "Restricted-scope apps repeat the security assessment every 12 months, counted from the previous Letter of Validation.",
+      "status": "sourced",
+      "src": [
+        "g3"
+      ]
+    },
+    {
+      "text": "Google references a $15,000 to $75,000 range for the security assessment.",
+      "status": "sourced",
+      "src": [
+        "g4"
+      ],
+      "note": "Secondhand, from a vendor who sells assessments, in a 2021 article. Confirm the current price with an assessor."
+    },
+    {
+      "text": "Google's own published review timeline.",
+      "status": "unknown",
+      "src": [],
+      "note": "Not on any Google page we could open. Every timeline above is from the vendor article."
+    }
   ],
   "blockers": [
-    { "symptom": "Users get signed out after a week", "cause": "The app is in Testing, where authorizations expire 7 days after consent.", "fix": "Publish to production, or limit scopes to sign-in.", "status": "sourced", "src": ["g1"] },
-    { "symptom": "Unverified app warning on the consent screen", "cause": "Sensitive or restricted scopes without verification, or scopes in code that differ from the consent screen.", "fix": "Make code and consent screen match, then submit for verification.", "status": "sourced", "src": ["g2"] },
-    { "symptom": "Verification keeps coming back with questions", "cause": "Each scope has to be justified in writing and shown in a demo video. Vague submissions get clarification rounds.", "fix": "One justification and one video segment per scope.", "status": "sourced", "src": ["g4"] },
-    { "symptom": "org_internal", "cause": "Audience is Internal and the user is outside your Cloud organization.", "fix": "Switch the audience to External.", "status": "sourced", "src": ["g1"] }
+    {
+      "symptom": "Users get signed out after a week",
+      "cause": "The app is in Testing, where authorizations expire 7 days after consent.",
+      "fix": "Publish to production, or limit scopes to sign-in.",
+      "status": "sourced",
+      "src": [
+        "g1"
+      ]
+    },
+    {
+      "symptom": "Unverified app warning on the consent screen",
+      "cause": "Sensitive or restricted scopes without verification, or scopes in code that differ from the consent screen.",
+      "fix": "Make code and consent screen match, then submit for verification.",
+      "status": "sourced",
+      "src": [
+        "g2"
+      ]
+    },
+    {
+      "symptom": "Verification keeps coming back with questions",
+      "cause": "Each scope has to be justified in writing and shown in a demo video. Vague submissions get clarification rounds.",
+      "fix": "One justification and one video segment per scope.",
+      "status": "sourced",
+      "src": [
+        "g4"
+      ]
+    },
+    {
+      "symptom": "org_internal",
+      "cause": "Audience is Internal and the user is outside your Cloud organization.",
+      "fix": "Switch the audience to External.",
+      "status": "sourced",
+      "src": [
+        "g1"
+      ]
+    }
   ],
   "handoff": {
     "agent": [
@@ -100,12 +261,33 @@
     "authorizeUrl": "https://accounts.google.com/o/oauth2/v2/auth",
     "tokenUrl": "https://oauth2.googleapis.com/token",
     "envPrefix": "GOOGLE",
-    "redirect": { "https": "unknown", "exactMatch": "unknown", "maxUris": null, "rule": "Register each redirect URI on the OAuth client. Adding one after verification triggers re-verification." },
+    "redirect": {
+      "https": "unknown",
+      "exactMatch": "unknown",
+      "maxUris": null,
+      "rule": "Register each redirect URI on the OAuth client. Adding one after verification triggers re-verification."
+    },
     "scopes": [
-      { "name": "openid email profile", "gated": false, "note": "Sign-in only. No test-user cap, no warning." },
-      { "name": "calendar", "gated": true, "note": "Sensitive: verification" },
-      { "name": "drive", "gated": true, "note": "Check Google's current scope table before relying on a tier" },
-      { "name": "gmail.readonly", "gated": true, "note": "Restricted: verification plus security assessment" }
+      {
+        "name": "openid email profile",
+        "gated": false,
+        "note": "Sign-in only. No test-user cap, no warning."
+      },
+      {
+        "name": "calendar",
+        "gated": true,
+        "note": "Sensitive: verification"
+      },
+      {
+        "name": "drive",
+        "gated": true,
+        "note": "Check Google's current scope table before relying on a tier"
+      },
+      {
+        "name": "gmail.readonly",
+        "gated": true,
+        "note": "Restricted: verification plus security assessment"
+      }
     ],
     "submission": [
       "Privacy policy URL on a domain you own",
@@ -116,9 +298,31 @@
     ]
   },
   "sources": {
-    "g1": { "title": "Manage app audience (Google Auth Platform)", "url": "https://support.google.com/cloud/answer/15549945", "kind": "official", "retrieved": "2026-10-29" },
-    "g2": { "title": "Unverified apps", "url": "https://support.google.com/cloud/answer/7454865", "kind": "official", "retrieved": "2026-10-29" },
-    "g3": { "title": "OAuth app annual recertification", "url": "https://support.google.com/cloud/answer/13463816", "kind": "official", "retrieved": "2026-10-29", "note": "Covers recertification only, not initial verification." },
-    "g4": { "title": "Google OAuth Verification: Costs, Timelines, Process (Nylas)", "url": "https://www.nylas.com/blog/google-oauth-app-verification/", "kind": "secondary", "retrieved": "2026-10-29", "note": "Vendor blog last updated June 2021. Timelines are its authors' experience, not Google's." }
+    "g1": {
+      "title": "Manage app audience (Google Auth Platform)",
+      "url": "https://support.google.com/cloud/answer/15549945",
+      "kind": "official",
+      "retrieved": "2026-10-29"
+    },
+    "g2": {
+      "title": "Unverified apps",
+      "url": "https://support.google.com/cloud/answer/7454865",
+      "kind": "official",
+      "retrieved": "2026-10-29"
+    },
+    "g3": {
+      "title": "OAuth app annual recertification",
+      "url": "https://support.google.com/cloud/answer/13463816",
+      "kind": "official",
+      "retrieved": "2026-10-29",
+      "note": "Covers recertification only, not initial verification."
+    },
+    "g4": {
+      "title": "Google OAuth Verification: Costs, Timelines, Process (Nylas)",
+      "url": "https://www.nylas.com/blog/google-oauth-app-verification/",
+      "kind": "secondary",
+      "retrieved": "2026-10-29",
+      "note": "Vendor blog last updated June 2021. Timelines are its authors' experience, not Google's."
+    }
   }
 }

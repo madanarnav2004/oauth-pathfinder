@@ -90,6 +90,8 @@ export const Guide = z
     /** Dev-coded one-liner. Humor lives in labels only. */
     label: z.string().max(90),
     summary: z.string().max(360),
+    /** The answer in one human sentence. Composed from the numbers when absent. */
+    verdict: z.string().max(200).optional(),
     /** 1 (hello world) to 5 (legal review). Our judgment, shown as such. */
     difficulty: z.number().int().min(1).max(5),
     /** The single thing most likely to bite. */

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { GUIDES, getGuide, resolveApp, withProbe } from "../lib/guides";
 import { fmtSpan, rulerPos, pickUnit } from "../lib/time";
-import { renderGuide, esc, guideToMarkdown, countStatuses } from "../lib/render";
+import { renderGuide, renderRoute, esc, guideToMarkdown, countStatuses, verdict, evidenceLine } from "../lib/render";
 import { encodeGuide, decodeGuide } from "../lib/share";
 import { matchBlocker, blockerReport } from "../lib/blockers";
 import { prepareSetup } from "../lib/prepare";
@@ -100,21 +100,55 @@ describe("rendering", () => {
   });
   it("renders the five-line answer, ruler and route", () => {
     const html = renderGuide(getGuide("google")!);
-    expect(html).toContain("pf-answer");
-    expect(html).toContain("pf-ruler");
+    expect(html).toContain("pf-verdict");
+    expect(html).toContain("pf-strip");
     expect(html).toContain("pf-route");
     expect(html).toContain("the gauntlet");
   });
   it("shows fog, not a number, when the wait is unknown", () => {
-    expect(renderGuide(getGuide("meta")!)).toContain("no source gives a number");
+    expect(renderGuide(getGuide("meta")!)).toContain("a wait nobody documents");
   });
   it("says 'none expected' for providers with no review", () => {
-    expect(renderGuide(getGuide("github")!)).toContain("none expected");
+    expect(renderGuide(getGuide("github")!)).toContain("no review to wait for");
   });
+  it("badges only the exceptions, never the default", () => {
+    // Google's route is entirely sourced, so nothing in it should carry a badge.
+    const google = getGuide("google")!;
+    expect(renderRoute(google)).not.toContain("pf-flag");
+    // GitHub has one step we could not source, and that one is called out.
+    const github = getGuide("github")!;
+    const route = renderRoute(github);
+    expect(route).toContain("our read");
+    expect((route.match(/pf-flag/g) ?? []).length).toBe(github.steps.filter((s) => s.status !== "sourced").length);
+    // An unanswered question says so rather than going unmarked.
+    expect(renderGuide(getGuide("spotify")!)).toContain("not documented");
+  });
+
+  it("names the provider you are waiting on instead of saying 'them'", () => {
+    const html = renderRoute(getGuide("google")!);
+    expect(html).toContain("Google · ");
+    expect(html).not.toContain("them ·");
+  });
+
   it("exports markdown", () => {
     const md = guideToMarkdown(getGuide("slack")!);
     expect(md).toContain("# Slack: OAuth app setup");
     expect(md).toContain("## Sources");
+  });
+
+  it("answers in a sentence before it answers in numbers", () => {
+    expect(verdict(getGuide("github")!)).toMatch(/nobody reviews it/i);
+    // A guide with no hand-written verdict still gets a readable one.
+    const bare = { ...getGuide("google")!, verdict: undefined };
+    expect(verdict(bare)).toBe("Half a day of setup, then months of waiting.");
+  });
+
+  it("summarises evidence as a sentence, with counts that add up", () => {
+    const g = getGuide("google")!;
+    const line = evidenceLine(g);
+    const total = Object.values(countStatuses(g)).reduce((a, b) => a + b, 0);
+    expect(line).toContain(`Of ${total} claims`);
+    expect(line).toContain("could not answer");
   });
 });
 

@@ -4,73 +4,191 @@
   "domain": "developers.facebook.com",
   "label": "your app, but make it a legal entity",
   "summary": "Dev mode works instantly for you and your testers. Letting the public use anything real means business verification, App Review, and then a yearly check-up.",
+  "verdict": "It works today for you and your testers. Letting real users in means verifying a business, passing App Review, then a check-up every year.",
   "difficulty": 5,
   "blocker": "Advanced access needs a verified business first. Without it your approved permissions only work for people with a role on the app.",
-  "handsOn": { "lo": 480, "hi": 4320, "basis": "inferred" },
+  "handsOn": {
+    "lo": 480,
+    "hi": 4320,
+    "basis": "inferred"
+  },
   "wait": null,
   "steps": [
     {
       "id": "create",
       "title": "Create the app and stay in Development mode",
       "detail": "New non-business apps start in Development mode. Business-type apps have no modes and use access levels instead. Stay in development until testing is done.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 10, "hi": 30, "basis": "inferred" },
-      "status": "sourced", "src": ["m3"]
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 10,
+        "hi": 30,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "m3"
+      ]
     },
     {
       "id": "build",
       "title": "Build against people with a role",
       "detail": "In Development mode any permission can be granted, but only to people with a role (developer, tester) and to test users. Test users can't interact with real ones.",
-      "owner": "agent", "kind": "do", "minutes": { "lo": 120, "hi": 960, "basis": "inferred" },
-      "status": "sourced", "src": ["m3"]
+      "owner": "agent",
+      "kind": "do",
+      "minutes": {
+        "lo": 120,
+        "hi": 960,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "m3"
+      ]
     },
     {
       "id": "calls",
       "title": "Make the required test API calls",
       "detail": "Review requires test calls made within the 30 days before you submit. They can take up to 24 hours to appear on the Testing page, so don't leave this to submission day.",
-      "owner": "agent", "kind": "do", "minutes": { "lo": 15, "hi": 60, "basis": "inferred" },
-      "status": "sourced", "src": ["m3"]
+      "owner": "agent",
+      "kind": "do",
+      "minutes": {
+        "lo": 15,
+        "hi": 60,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "m3"
+      ]
     },
     {
       "id": "business",
       "title": "Verify your business",
       "detail": "Advanced access, for any permission, requires a verified business linked to the app. Individual verification no longer counts once business verification is available.",
-      "owner": "provider", "kind": "gate", "minutes": null,
-      "status": "sourced", "src": ["m1", "m2"]
+      "owner": "provider",
+      "kind": "gate",
+      "minutes": null,
+      "status": "sourced",
+      "src": [
+        "m1",
+        "m2"
+      ]
     },
     {
       "id": "review",
       "title": "Submit for App Review",
       "detail": "Read the developer policies, meet security and privacy requirements, list the permissions you need, submit. If rejected there is a live chat for rejected apps. No review timeline is stated.",
-      "owner": "provider", "kind": "gate", "minutes": null,
-      "status": "sourced", "src": ["m2"]
+      "owner": "provider",
+      "kind": "gate",
+      "minutes": null,
+      "status": "sourced",
+      "src": [
+        "m2"
+      ]
     },
     {
       "id": "deletion",
       "title": "Implement a data deletion callback",
       "detail": "Needed before going live when you've implemented a use case.",
-      "owner": "agent", "kind": "do", "minutes": { "lo": 30, "hi": 120, "basis": "inferred" },
-      "status": "sourced", "src": ["m3"]
+      "owner": "agent",
+      "kind": "do",
+      "minutes": {
+        "lo": 30,
+        "hi": 120,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "m3"
+      ]
     },
     {
       "id": "checkup",
       "title": "After approval: Data Use Checkup, every year",
       "detail": "A yearly certification that permissions are used within the platform terms. Advanced permissions also need a Data Protection Assessment.",
-      "owner": "you", "kind": "do", "minutes": null,
-      "status": "sourced", "src": ["m2"]
+      "owner": "you",
+      "kind": "do",
+      "minutes": null,
+      "status": "sourced",
+      "src": [
+        "m2"
+      ]
     }
   ],
   "nuances": [
-    { "text": "Live mode lets anyone grant permissions, but only those approved through App Review.", "status": "sourced", "src": ["m3"] },
-    { "text": "Apps that had advanced access were required to link to a verified business, rolled out through 2023, or lose those permissions.", "status": "sourced", "src": ["m1"], "note": "A 2023 announcement. Check it still matches the current console." },
-    { "text": "The page doesn't list any permissions that skip App Review. It says most use cases need it.", "status": "sourced", "src": ["m3"] },
-    { "text": "How long business verification and App Review take.", "status": "unknown", "src": [], "note": "Neither the Trust Center nor Build and Test states one. Community reports vary a lot and we haven't treated them as evidence." },
-    { "text": "What the extra data-protection questions after business verification contain.", "status": "unknown", "src": [], "note": "The 2023 post says details were still to come." }
+    {
+      "text": "Live mode lets anyone grant permissions, but only those approved through App Review.",
+      "status": "sourced",
+      "src": [
+        "m3"
+      ]
+    },
+    {
+      "text": "Apps that had advanced access were required to link to a verified business, rolled out through 2023, or lose those permissions.",
+      "status": "sourced",
+      "src": [
+        "m1"
+      ],
+      "note": "A 2023 announcement. Check it still matches the current console."
+    },
+    {
+      "text": "The page doesn't list any permissions that skip App Review. It says most use cases need it.",
+      "status": "sourced",
+      "src": [
+        "m3"
+      ]
+    },
+    {
+      "text": "How long business verification and App Review take.",
+      "status": "unknown",
+      "src": [],
+      "note": "Neither the Trust Center nor Build and Test states one. Community reports vary a lot and we haven't treated them as evidence."
+    },
+    {
+      "text": "What the extra data-protection questions after business verification contain.",
+      "status": "unknown",
+      "src": [],
+      "note": "The 2023 post says details were still to come."
+    }
   ],
   "blockers": [
-    { "symptom": "Works for you, fails for real users", "cause": "The app is in Development mode, or the permission isn't approved.", "fix": "Finish review for the specific permissions, then switch to Live.", "status": "sourced", "src": ["m3"] },
-    { "symptom": "Advanced permissions suddenly stop working", "cause": "The app isn't linked to a verified or pending business.", "fix": "Link the app to a verified business in Business settings.", "status": "sourced", "src": ["m1"] },
-    { "symptom": "Can't submit: test calls missing", "cause": "No successful API calls in the last 30 days, or they haven't shown up yet.", "fix": "Make the calls, wait up to 24 hours, then submit.", "status": "sourced", "src": ["m3"] },
-    { "symptom": "Submission rejected", "cause": "Review found the use case or the demonstration insufficient.", "fix": "Use the live chat offered for rejected apps, then resubmit.", "status": "sourced", "src": ["m2"] }
+    {
+      "symptom": "Works for you, fails for real users",
+      "cause": "The app is in Development mode, or the permission isn't approved.",
+      "fix": "Finish review for the specific permissions, then switch to Live.",
+      "status": "sourced",
+      "src": [
+        "m3"
+      ]
+    },
+    {
+      "symptom": "Advanced permissions suddenly stop working",
+      "cause": "The app isn't linked to a verified or pending business.",
+      "fix": "Link the app to a verified business in Business settings.",
+      "status": "sourced",
+      "src": [
+        "m1"
+      ]
+    },
+    {
+      "symptom": "Can't submit: test calls missing",
+      "cause": "No successful API calls in the last 30 days, or they haven't shown up yet.",
+      "fix": "Make the calls, wait up to 24 hours, then submit.",
+      "status": "sourced",
+      "src": [
+        "m3"
+      ]
+    },
+    {
+      "symptom": "Submission rejected",
+      "cause": "Review found the use case or the demonstration insufficient.",
+      "fix": "Use the live chat offered for rejected apps, then resubmit.",
+      "status": "sourced",
+      "src": [
+        "m2"
+      ]
+    }
   ],
   "handoff": {
     "agent": [
@@ -90,10 +208,23 @@
     "authorizeUrl": "https://www.facebook.com/dialog/oauth",
     "tokenUrl": "https://graph.facebook.com/oauth/access_token",
     "envPrefix": "META",
-    "redirect": { "https": "unknown", "exactMatch": "unknown", "maxUris": null, "rule": "Set valid OAuth redirect URIs in the Facebook Login settings. The pages we read don't state matching rules." },
+    "redirect": {
+      "https": "unknown",
+      "exactMatch": "unknown",
+      "maxUris": null,
+      "rule": "Set valid OAuth redirect URIs in the Facebook Login settings. The pages we read don't state matching rules."
+    },
     "scopes": [
-      { "name": "public_profile, email", "gated": false, "note": "Commonly usable at standard access. Confirm in the console." },
-      { "name": "Any advanced-access permission", "gated": true, "note": "Verified business plus App Review" }
+      {
+        "name": "public_profile, email",
+        "gated": false,
+        "note": "Commonly usable at standard access. Confirm in the console."
+      },
+      {
+        "name": "Any advanced-access permission",
+        "gated": true,
+        "note": "Verified business plus App Review"
+      }
     ],
     "submission": [
       "A verified business linked to the app",
@@ -104,8 +235,24 @@
     ]
   },
   "sources": {
-    "m1": { "title": "Developer platform requiring business verification for advanced access", "url": "https://developers.facebook.com/blog/post/2023/02/01/developer-platform-requiring-business-verification-for-advanced-access/", "kind": "official", "retrieved": "2026-10-29", "note": "February 2023 announcement." },
-    "m2": { "title": "Meta Developer Trust Center", "url": "https://developers.facebook.com/documentation/development/trust-center", "kind": "official", "retrieved": "2026-10-29" },
-    "m3": { "title": "Build and test", "url": "https://developers.facebook.com/documentation/development/build-and-test", "kind": "official", "retrieved": "2026-10-29" }
+    "m1": {
+      "title": "Developer platform requiring business verification for advanced access",
+      "url": "https://developers.facebook.com/blog/post/2023/02/01/developer-platform-requiring-business-verification-for-advanced-access/",
+      "kind": "official",
+      "retrieved": "2026-10-29",
+      "note": "February 2023 announcement."
+    },
+    "m2": {
+      "title": "Meta Developer Trust Center",
+      "url": "https://developers.facebook.com/documentation/development/trust-center",
+      "kind": "official",
+      "retrieved": "2026-10-29"
+    },
+    "m3": {
+      "title": "Build and test",
+      "url": "https://developers.facebook.com/documentation/development/build-and-test",
+      "kind": "official",
+      "retrieved": "2026-10-29"
+    }
   }
 }

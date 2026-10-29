@@ -2,7 +2,7 @@ import { McpServer } from "@modelcontextprotocol/server";
 import { registerAppResource, registerAppTool, RESOURCE_MIME_TYPE } from "@modelcontextprotocol/ext-apps/server";
 import { z } from "zod";
 import { GUIDES, resolveApp } from "./guides";
-import { guideToMarkdown, DIFFICULTY } from "./render";
+import { guideToMarkdown, DIFFICULTY, verdict } from "./render";
 import { fmtSpan } from "./time";
 import { prepareSetup } from "./prepare";
 import { blockerReport } from "./blockers";
@@ -16,8 +16,8 @@ export const CARD_URI = "ui://pathfinder/card/v1.html";
 const known = () => GUIDES.map((g) => g.name).join(", ");
 
 function headline(g: Guide): string {
-  const span = (s: Guide["handsOn"]) => (s ? (s.hi === 0 ? "none expected" : fmtSpan(s)) : "unknown");
-  return `${g.name}: ${DIFFICULTY[g.difficulty]} (${g.difficulty}/5). Hands-on ${span(g.handsOn)}. Waiting ${span(g.wait)}. Will bite: ${g.blocker}`;
+  const span = (s: Guide["handsOn"]) => (s ? (s.hi === 0 ? "none" : fmtSpan(s)) : "undocumented");
+  return `${g.name}: ${verdict(g)} (${DIFFICULTY[g.difficulty]}, ${g.difficulty}/5; hands-on ${span(g.handsOn)}, waiting ${span(g.wait)}.) Will bite: ${g.blocker}`;
 }
 
 function text(t: string, extra: Record<string, unknown> = {}) {

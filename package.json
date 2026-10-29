@@ -14,7 +14,8 @@
     "card": "tsx scripts/build-card.ts",
     "probe": "tsx scripts/probe.ts",
     "doctor": "tsx scripts/doctor.ts",
-    "eval": "tsx scripts/eval.ts"
+    "eval": "tsx scripts/eval.ts",
+    "verify:card": "tsx scripts/verify-card.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/ext-apps": "^2.0.4",

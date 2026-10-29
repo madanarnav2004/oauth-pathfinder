@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </header>
           {children}
           <footer className="footer">
-            <span>Evidence over vibes. Every claim says how we know it.</span>
+            <span>Every claim links to where it came from, or admits that it can&apos;t.</span>
             <span>
               <a href="https://github.com/madanarnav2004/oauth-pathfinder">source</a>
             </span>

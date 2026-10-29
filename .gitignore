@@ -7,3 +7,5 @@ node_modules
 next-env.d.ts
 .vercel
 coverage
+tests/host/.work
+tests/host/shots

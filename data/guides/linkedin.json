@@ -4,72 +4,204 @@
   "domain": "linkedin.com",
   "label": "401 Redirect_uri doesn't match, but personally",
   "summary": "Sign in and posting are self-serve. Anything about ads, sales, recruiting or learning is a separate program application, with no published timeline.",
+  "verdict": "An hour for sign-in and posting. Everything else is a separate application per programme, and none of them publish a timeline.",
   "difficulty": 3,
   "blocker": "The useful APIs sit behind per-program applications, and tokens last 60 days with no refresh unless you're an approved partner.",
-  "handsOn": { "lo": 45, "hi": 120, "basis": "inferred" },
+  "handsOn": {
+    "lo": 45,
+    "hi": 120,
+    "basis": "inferred"
+  },
   "wait": null,
   "steps": [
     {
       "id": "create",
       "title": "Create the app in the LinkedIn Developer Portal",
       "detail": "From experience, the portal asks you to associate a LinkedIn Page and a Page admin approves it. The docs page we read doesn't mention this, and LinkedIn's help article refused our fetch.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 10, "hi": 30, "basis": "inferred" },
-      "status": "inferred", "src": []
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 10,
+        "hi": 30,
+        "basis": "inferred"
+      },
+      "status": "inferred",
+      "src": []
     },
     {
       "id": "products",
       "title": "Add the self-serve products",
       "detail": "On the Products tab. Sign In with LinkedIn using OpenID Connect gives profile and email. Share on LinkedIn gives w_member_social.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 2, "hi": 10, "basis": "inferred" },
-      "status": "sourced", "src": ["li1"]
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 2,
+        "hi": 10,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "li1"
+      ]
     },
     {
       "id": "redirect",
       "title": "Register redirect URLs on the Auth tab",
       "detail": "Absolute and HTTPS. No fragment. Query parameters on the registered URL are dropped, so don't rely on them.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 3, "hi": 10, "basis": "inferred" },
-      "status": "sourced", "src": ["li2"],
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 3,
+        "hi": 10,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "li2"
+      ],
       "fields": [
-        { "label": "Authorize", "value": "https://www.linkedin.com/oauth/v2/authorization" },
-        { "label": "Token", "value": "https://www.linkedin.com/oauth/v2/accessToken" }
+        {
+          "label": "Authorize",
+          "value": "https://www.linkedin.com/oauth/v2/authorization"
+        },
+        {
+          "label": "Token",
+          "value": "https://www.linkedin.com/oauth/v2/accessToken"
+        }
       ]
     },
     {
       "id": "flow",
       "title": "Implement the authorization code flow",
       "detail": "Check state on return. The token request must be form-encoded and repeat the same redirect_uri. The code lives 30 minutes.",
-      "owner": "agent", "kind": "do", "minutes": { "lo": 20, "hi": 60, "basis": "inferred" },
-      "status": "sourced", "src": ["li2"]
+      "owner": "agent",
+      "kind": "do",
+      "minutes": {
+        "lo": 20,
+        "hi": 60,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "li2"
+      ]
     },
     {
       "id": "programs",
       "title": "Marketing, Sales, Talent or Learning APIs: apply per program",
       "detail": "Advertising API is added as a product and reviewed. Sales Navigator, Talent and Learning each have their own partner application. LinkedIn states no timelines on the page we read.",
-      "owner": "provider", "kind": "gate", "minutes": null,
-      "status": "sourced", "src": ["li1"]
+      "owner": "provider",
+      "kind": "gate",
+      "minutes": null,
+      "status": "sourced",
+      "src": [
+        "li1"
+      ]
     },
     {
       "id": "refresh",
       "title": "Plan for 60-day tokens",
       "detail": "Every access token lives 60 days. Without programmatic refresh, you re-run the authorization flow, and the user only skips consent if still logged in to LinkedIn.",
-      "owner": "agent", "kind": "do", "minutes": { "lo": 30, "hi": 90, "basis": "inferred" },
-      "status": "sourced", "src": ["li2"]
+      "owner": "agent",
+      "kind": "do",
+      "minutes": {
+        "lo": 30,
+        "hi": 90,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "li2"
+      ]
     }
   ],
   "nuances": [
-    { "text": "Access tokens last 5,184,000 seconds, 60 days, for every app.", "status": "sourced", "src": ["li2"] },
-    { "text": "Programmatic refresh tokens go to a restricted set of partners. Everyone else repeats the authorization flow.", "status": "sourced", "src": ["li2"] },
-    { "text": "Consent is all or nothing. A new scope forces re-authentication, and asking for a different scope than before invalidates earlier tokens.", "status": "sourced", "src": ["li2"] },
-    { "text": "r_compliance and w_compliance are closed. They can't be requested.", "status": "sourced", "src": ["li1"] },
-    { "text": "Available scopes depend on the Products your app has been approved for.", "status": "sourced", "src": ["li2"] },
-    { "text": "Whether a LinkedIn Page must verify your app before it works.", "status": "unknown", "src": [], "note": "Believed yes from practice. LinkedIn's help page blocked our fetch (robots), so unconfirmed." },
-    { "text": "How long any of the program applications take.", "status": "unknown", "src": [], "note": "No timeline on the getting-access page." }
+    {
+      "text": "Access tokens last 5,184,000 seconds, 60 days, for every app.",
+      "status": "sourced",
+      "src": [
+        "li2"
+      ]
+    },
+    {
+      "text": "Programmatic refresh tokens go to a restricted set of partners. Everyone else repeats the authorization flow.",
+      "status": "sourced",
+      "src": [
+        "li2"
+      ]
+    },
+    {
+      "text": "Consent is all or nothing. A new scope forces re-authentication, and asking for a different scope than before invalidates earlier tokens.",
+      "status": "sourced",
+      "src": [
+        "li2"
+      ]
+    },
+    {
+      "text": "r_compliance and w_compliance are closed. They can't be requested.",
+      "status": "sourced",
+      "src": [
+        "li1"
+      ]
+    },
+    {
+      "text": "Available scopes depend on the Products your app has been approved for.",
+      "status": "sourced",
+      "src": [
+        "li2"
+      ]
+    },
+    {
+      "text": "Whether a LinkedIn Page must verify your app before it works.",
+      "status": "unknown",
+      "src": [],
+      "note": "Believed yes from practice. LinkedIn's help page blocked our fetch (robots), so unconfirmed."
+    },
+    {
+      "text": "How long any of the program applications take.",
+      "status": "unknown",
+      "src": [],
+      "note": "No timeline on the getting-access page."
+    }
   ],
   "blockers": [
-    { "symptom": "401 Redirect_uri doesn't match", "cause": "The redirect_uri on the authorize call isn't an exact registered URL.", "fix": "Copy it character for character from the Auth tab.", "status": "sourced", "src": ["li2"] },
-    { "symptom": "400 invalid_redirect_uri on the token call", "cause": "Different redirect_uri than the authorize call, or the code is older than 30 minutes.", "fix": "Send the same URI, and exchange the code immediately.", "status": "sourced", "src": ["li2"] },
-    { "symptom": "Scope you asked for isn't granted", "cause": "The product that carries it isn't enabled or approved on the app.", "fix": "Add the product on the Products tab, or apply to its program.", "status": "sourced", "src": ["li2", "li1"] },
-    { "symptom": "Users must reconnect every two months", "cause": "60-day access tokens and no refresh token.", "fix": "Prompt a silent re-auth before expiry, or apply for programmatic refresh.", "status": "sourced", "src": ["li2"] }
+    {
+      "symptom": "401 Redirect_uri doesn't match",
+      "cause": "The redirect_uri on the authorize call isn't an exact registered URL.",
+      "fix": "Copy it character for character from the Auth tab.",
+      "status": "sourced",
+      "src": [
+        "li2"
+      ]
+    },
+    {
+      "symptom": "400 invalid_redirect_uri on the token call",
+      "cause": "Different redirect_uri than the authorize call, or the code is older than 30 minutes.",
+      "fix": "Send the same URI, and exchange the code immediately.",
+      "status": "sourced",
+      "src": [
+        "li2"
+      ]
+    },
+    {
+      "symptom": "Scope you asked for isn't granted",
+      "cause": "The product that carries it isn't enabled or approved on the app.",
+      "fix": "Add the product on the Products tab, or apply to its program.",
+      "status": "sourced",
+      "src": [
+        "li2",
+        "li1"
+      ]
+    },
+    {
+      "symptom": "Users must reconnect every two months",
+      "cause": "60-day access tokens and no refresh token.",
+      "fix": "Prompt a silent re-auth before expiry, or apply for programmatic refresh.",
+      "status": "sourced",
+      "src": [
+        "li2"
+      ]
+    }
   ],
   "handoff": {
     "agent": [
@@ -89,12 +221,33 @@
     "authorizeUrl": "https://www.linkedin.com/oauth/v2/authorization",
     "tokenUrl": "https://www.linkedin.com/oauth/v2/accessToken",
     "envPrefix": "LINKEDIN",
-    "redirect": { "https": "required", "exactMatch": "yes", "maxUris": null, "rule": "Absolute HTTPS, no #, query strings dropped. Same URI on authorize and token calls." },
+    "redirect": {
+      "https": "required",
+      "exactMatch": "yes",
+      "maxUris": null,
+      "rule": "Absolute HTTPS, no #, query strings dropped. Same URI on authorize and token calls."
+    },
     "scopes": [
-      { "name": "openid profile email", "gated": false, "note": "Sign In with LinkedIn using OIDC" },
-      { "name": "w_member_social", "gated": false, "note": "Share on LinkedIn" },
-      { "name": "Advertising API permissions", "gated": true, "note": "Apply through the Developer Portal" },
-      { "name": "r_compliance, w_compliance", "gated": true, "note": "Closed. Cannot be requested." }
+      {
+        "name": "openid profile email",
+        "gated": false,
+        "note": "Sign In with LinkedIn using OIDC"
+      },
+      {
+        "name": "w_member_social",
+        "gated": false,
+        "note": "Share on LinkedIn"
+      },
+      {
+        "name": "Advertising API permissions",
+        "gated": true,
+        "note": "Apply through the Developer Portal"
+      },
+      {
+        "name": "r_compliance, w_compliance",
+        "gated": true,
+        "note": "Closed. Cannot be requested."
+      }
     ],
     "submission": [
       "One application per program (Marketing, Sales, Talent, Learning)",
@@ -103,7 +256,17 @@
     ]
   },
   "sources": {
-    "li1": { "title": "Getting access to LinkedIn APIs", "url": "https://learn.microsoft.com/en-us/linkedin/shared/authentication/getting-access", "kind": "official", "retrieved": "2026-10-29" },
-    "li2": { "title": "Authorization code flow (3-legged OAuth)", "url": "https://learn.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow", "kind": "official", "retrieved": "2026-10-29" }
+    "li1": {
+      "title": "Getting access to LinkedIn APIs",
+      "url": "https://learn.microsoft.com/en-us/linkedin/shared/authentication/getting-access",
+      "kind": "official",
+      "retrieved": "2026-10-29"
+    },
+    "li2": {
+      "title": "Authorization code flow (3-legged OAuth)",
+      "url": "https://learn.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow",
+      "kind": "official",
+      "retrieved": "2026-10-29"
+    }
   }
 }

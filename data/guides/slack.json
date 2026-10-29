@@ -4,80 +4,222 @@
   "domain": "slack.com",
   "label": "works in your workspace, ships to theirs",
   "summary": "Building is quick and distribution is a toggle. The unknown is the Marketplace review, which Slack publishes no timeline for.",
+  "verdict": "An afternoon to build, then a toggle to ship. What you can't plan around is Slack's Marketplace review, which has no published timeline.",
   "difficulty": 2,
   "blocker": "Some customer workspaces only allow admin-approved or Marketplace-listed apps, and Slack gives no review timeline.",
-  "handsOn": { "lo": 60, "hi": 180, "basis": "inferred" },
+  "handsOn": {
+    "lo": 60,
+    "hi": 180,
+    "basis": "inferred"
+  },
   "wait": null,
   "steps": [
     {
       "id": "create",
       "title": "Create the app in the Slack app dashboard",
       "detail": "Start from scratch and attach it to a development workspace. The creation click-path wasn't in the pages we read; this step is from how the dashboard works in practice.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 5, "hi": 15, "basis": "inferred" },
-      "status": "inferred", "src": []
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 5,
+        "hi": 15,
+        "basis": "inferred"
+      },
+      "status": "inferred",
+      "src": []
     },
     {
       "id": "redirect",
       "title": "Add HTTPS redirect URLs",
       "detail": "Under OAuth & Permissions. Slack requires SSL for redirect URLs. You can also pass redirect_uri in the authorize request.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 3, "hi": 10, "basis": "inferred" },
-      "status": "sourced", "src": ["sl2", "sl1"],
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 3,
+        "hi": 10,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "sl2",
+        "sl1"
+      ],
       "fields": [
-        { "label": "Authorize URL", "value": "https://slack.com/oauth/v2/authorize" },
-        { "label": "Token URL", "value": "oauth.v2.access" },
-        { "label": "Match rule", "value": "https, equal to or under a configured URL, no #" }
+        {
+          "label": "Authorize URL",
+          "value": "https://slack.com/oauth/v2/authorize"
+        },
+        {
+          "label": "Token URL",
+          "value": "oauth.v2.access"
+        },
+        {
+          "label": "Match rule",
+          "value": "https, equal to or under a configured URL, no #"
+        }
       ]
     },
     {
       "id": "scopes",
       "title": "Choose bot scopes and user scopes separately",
       "detail": "Bot scopes go in scope, user scopes in user_scope. Ask for the minimum, because workspace admins weigh the list when approving.",
-      "owner": "agent", "kind": "do", "minutes": { "lo": 10, "hi": 30, "basis": "inferred" },
-      "status": "sourced", "src": ["sl2", "sl1"]
+      "owner": "agent",
+      "kind": "do",
+      "minutes": {
+        "lo": 10,
+        "hi": 30,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "sl2",
+        "sl1"
+      ]
     },
     {
       "id": "flow",
       "title": "Implement the install flow",
       "detail": "Redirect to authorize, check state on return, then exchange the code through oauth.v2.access. The code expires after ten minutes.",
-      "owner": "agent", "kind": "do", "minutes": { "lo": 20, "hi": 60, "basis": "inferred" },
-      "status": "sourced", "src": ["sl2"]
+      "owner": "agent",
+      "kind": "do",
+      "minutes": {
+        "lo": 20,
+        "hi": 60,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "sl2"
+      ]
     },
     {
       "id": "distribute",
       "title": "Activate public distribution",
       "detail": "Manage Distribution, Share Your App with Other Workspaces, finish the checklist, Activate Public Distribution. You get an Add to Slack button and a shareable install URL.",
-      "owner": "you", "kind": "do", "minutes": { "lo": 10, "hi": 30, "basis": "inferred" },
-      "status": "sourced", "src": ["sl1"]
+      "owner": "you",
+      "kind": "do",
+      "minutes": {
+        "lo": 10,
+        "hi": 30,
+        "basis": "inferred"
+      },
+      "status": "sourced",
+      "src": [
+        "sl1"
+      ]
     },
     {
       "id": "admins",
       "title": "Customer admins may have to approve the install",
       "detail": "Some workspaces limit installs to admins or to Marketplace-listed apps. The wait is theirs, and nobody has published a number.",
-      "owner": "provider", "kind": "gate", "minutes": null,
-      "status": "sourced", "src": ["sl1"]
+      "owner": "provider",
+      "kind": "gate",
+      "minutes": null,
+      "status": "sourced",
+      "src": [
+        "sl1"
+      ]
     },
     {
       "id": "market",
       "title": "Optional: submit to the Slack Marketplace",
       "detail": "Reviewed against Slack's requirements and guidelines. Recommended for commercial distribution. The distribution page states no review timeline.",
-      "owner": "provider", "kind": "gate", "minutes": null,
-      "status": "unknown", "src": ["sl1"]
+      "owner": "provider",
+      "kind": "gate",
+      "minutes": null,
+      "status": "unknown",
+      "src": [
+        "sl1"
+      ]
     }
   ],
   "nuances": [
-    { "text": "Scopes are additive. Re-authorizing adds them, and removing one means revoking the token.", "status": "sourced", "src": ["sl2"] },
-    { "text": "The team parameter is a hint Slack may drop. Read team.id and is_enterprise_install from the oauth.v2.access response.", "status": "sourced", "src": ["sl2"] },
-    { "text": "Tokens don't expire unless you enable rotation, which is available to apps with granular permissions.", "status": "sourced", "src": ["sl2"] },
-    { "text": "With several redirect URLs configured, send the same redirect_uri on authorize and on the token call, or you get bad_redirect_uri.", "status": "sourced", "src": ["sl2"] },
-    { "text": "Apps with scopes beyond bot, incoming-webhook, commands and identify are uninstalled if the installing user leaves or becomes a guest.", "status": "sourced", "src": ["sl1"] },
-    { "text": "Once published to the Marketplace you can't switch public distribution off. You discontinue the listing instead.", "status": "sourced", "src": ["sl1"] },
-    { "text": "How long Marketplace review takes.", "status": "unknown", "src": [], "note": "Looked on the distribution page. Review guidelines are linked there but weren't summarized." }
+    {
+      "text": "Scopes are additive. Re-authorizing adds them, and removing one means revoking the token.",
+      "status": "sourced",
+      "src": [
+        "sl2"
+      ]
+    },
+    {
+      "text": "The team parameter is a hint Slack may drop. Read team.id and is_enterprise_install from the oauth.v2.access response.",
+      "status": "sourced",
+      "src": [
+        "sl2"
+      ]
+    },
+    {
+      "text": "Tokens don't expire unless you enable rotation, which is available to apps with granular permissions.",
+      "status": "sourced",
+      "src": [
+        "sl2"
+      ]
+    },
+    {
+      "text": "With several redirect URLs configured, send the same redirect_uri on authorize and on the token call, or you get bad_redirect_uri.",
+      "status": "sourced",
+      "src": [
+        "sl2"
+      ]
+    },
+    {
+      "text": "Apps with scopes beyond bot, incoming-webhook, commands and identify are uninstalled if the installing user leaves or becomes a guest.",
+      "status": "sourced",
+      "src": [
+        "sl1"
+      ]
+    },
+    {
+      "text": "Once published to the Marketplace you can't switch public distribution off. You discontinue the listing instead.",
+      "status": "sourced",
+      "src": [
+        "sl1"
+      ]
+    },
+    {
+      "text": "How long Marketplace review takes.",
+      "status": "unknown",
+      "src": [],
+      "note": "Looked on the distribution page. Review guidelines are linked there but weren't summarized."
+    }
   ],
   "blockers": [
-    { "symptom": "bad_redirect_uri", "cause": "Several redirect URLs are configured and the authorize and token calls sent different ones, or none.", "fix": "Send the identical redirect_uri in both calls.", "status": "sourced", "src": ["sl2"] },
-    { "symptom": "invalid_team_for_non_distributed_app", "cause": "Someone outside the development workspace tried to install an app that isn't distributed yet.", "fix": "Finish the distribution checklist and activate public distribution.", "status": "inferred", "src": ["sl2"] },
-    { "symptom": "missing_scope at runtime", "cause": "Optional scopes can be declined during install.", "fix": "Check the granted scopes before you show a feature.", "status": "sourced", "src": ["sl2"] },
-    { "symptom": "Admin says they can't install it", "cause": "Their workspace restricts installs to approved or listed apps.", "fix": "Send the admin your exact scope list and why each is needed.", "status": "sourced", "src": ["sl1"] }
+    {
+      "symptom": "bad_redirect_uri",
+      "cause": "Several redirect URLs are configured and the authorize and token calls sent different ones, or none.",
+      "fix": "Send the identical redirect_uri in both calls.",
+      "status": "sourced",
+      "src": [
+        "sl2"
+      ]
+    },
+    {
+      "symptom": "invalid_team_for_non_distributed_app",
+      "cause": "Someone outside the development workspace tried to install an app that isn't distributed yet.",
+      "fix": "Finish the distribution checklist and activate public distribution.",
+      "status": "inferred",
+      "src": [
+        "sl2"
+      ]
+    },
+    {
+      "symptom": "missing_scope at runtime",
+      "cause": "Optional scopes can be declined during install.",
+      "fix": "Check the granted scopes before you show a feature.",
+      "status": "sourced",
+      "src": [
+        "sl2"
+      ]
+    },
+    {
+      "symptom": "Admin says they can't install it",
+      "cause": "Their workspace restricts installs to approved or listed apps.",
+      "fix": "Send the admin your exact scope list and why each is needed.",
+      "status": "sourced",
+      "src": [
+        "sl1"
+      ]
+    }
   ],
   "handoff": {
     "agent": [
@@ -97,11 +239,28 @@
     "authorizeUrl": "https://slack.com/oauth/v2/authorize",
     "tokenUrl": "https://slack.com/api/oauth.v2.access",
     "envPrefix": "SLACK",
-    "redirect": { "https": "required", "exactMatch": "prefix-ok", "maxUris": null, "rule": "HTTPS only. redirect_uri must equal or sit under a configured URL, with no # fragment." },
+    "redirect": {
+      "https": "required",
+      "exactMatch": "prefix-ok",
+      "maxUris": null,
+      "rule": "HTTPS only. redirect_uri must equal or sit under a configured URL, with no # fragment."
+    },
     "scopes": [
-      { "name": "chat:write", "gated": false, "note": "Post as the bot" },
-      { "name": "channels:read", "gated": false, "note": "List public channels" },
-      { "name": "users:read", "gated": false, "note": "Read member profiles" }
+      {
+        "name": "chat:write",
+        "gated": false,
+        "note": "Post as the bot"
+      },
+      {
+        "name": "channels:read",
+        "gated": false,
+        "note": "List public channels"
+      },
+      {
+        "name": "users:read",
+        "gated": false,
+        "note": "Read member profiles"
+      }
     ],
     "submission": [
       "Request only the scopes you need",
@@ -111,7 +270,17 @@
     ]
   },
   "sources": {
-    "sl1": { "title": "App distribution", "url": "https://docs.slack.dev/distribution", "kind": "official", "retrieved": "2026-10-29" },
-    "sl2": { "title": "Installing with OAuth", "url": "https://docs.slack.dev/authentication/installing-with-oauth/", "kind": "official", "retrieved": "2026-10-29" }
+    "sl1": {
+      "title": "App distribution",
+      "url": "https://docs.slack.dev/distribution",
+      "kind": "official",
+      "retrieved": "2026-10-29"
+    },
+    "sl2": {
+      "title": "Installing with OAuth",
+      "url": "https://docs.slack.dev/authentication/installing-with-oauth/",
+      "kind": "official",
+      "retrieved": "2026-10-29"
+    }
   }
 }
