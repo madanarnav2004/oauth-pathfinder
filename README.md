@@ -87,7 +87,7 @@ Deploying is plain Next.js: `vercel`, add the env vars, done. Live generation ca
 
 - **I registered no OAuth apps.** That means creating accounts and passing identity checks, which an agent should not do on your behalf. What it can do is read, probe public endpoints with dummy credentials, and prepare everything you paste in. Each guide says which steps are yours.
 - **Probes prove an endpoint answers and how it errors — nothing about approval.** No real credentials are ever sent.
-- **The card was verified against the reference `AppBridge` host**, not inside Claude's or ChatGPT's own clients. It follows the 2026-01-26 MCP Apps spec and degrades to text where the host has no UI support.
+- **The card is verified in two hosts**: the reference `AppBridge` (automated, `npm run verify:card`) and Codex (by hand, screenshot above). I have not checked it inside Claude's own clients. It follows the 2026-01-26 MCP Apps spec and degrades to text where the host has no UI support.
 - **Some pages would not open or did not answer**: Spotify's 2026 developer-access announcement, LinkedIn's Page-verification article, Discord's verification process, Meta's review timelines. Those are marked rather than filled in.
 - **Docs change.** Every source carries the date it was read.
 - **Live generation is only as good as what search finds.** The quote check catches unsupported claims, not missing ones. `npm run eval` is how to measure that.

@@ -29,6 +29,8 @@ Then, in the agent:
 3. **"I'm getting bad_redirect_uri on Slack"** → cause and fix from the known failure modes
 4. **"set it up for localhost:3000 and app.example.com"** → the exact redirect URIs, env var names, and which scopes are gated
 
+![Google guide rendered inline in Codex](img/codex-inline-card.png)
+
 Or on the website: the front page, then any of the eight guides, then type an app that isn't there.
 
 ## What a developer learns
@@ -77,7 +79,7 @@ The probes prove an endpoint exists and how it errors. They prove nothing about 
 ## Limits
 
 - Eight apps, not a hundred. The format is the point; live generation reaches the rest.
-- The card was verified against the reference host, not inside Claude's or ChatGPT's own clients.
+- The card is verified in the reference host (automated) and in Codex (by hand, `docs/img/codex-inline-card.png`), not yet in Claude's own clients.
 - Spotify's 2026 developer-access announcement, LinkedIn's Page-verification article, Discord's verification threshold and Meta's review timelines could not be read. They are marked, not filled in.
 - Live generation is only as good as what search finds. The quote check catches unsupported claims, not missing ones; `npm run eval` measures the gap against the hand-checked guides.
 
