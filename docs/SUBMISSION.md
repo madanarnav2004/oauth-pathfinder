@@ -1,88 +1,87 @@
-# path/finder — submission notes
+# path/finder: submission notes
 
-**Live:** https://oauth-pathfinder-topaz.vercel.app
-**Repo:** https://github.com/madanarnav2004/oauth-pathfinder
-**MCP endpoint:** https://oauth-pathfinder-topaz.vercel.app/mcp
-
----
-
-## The call I made
-
-The brief asks for a working experience that tells a developer how hard an OAuth app will be, and lets an agent generate a guide for an app it hasn't seen.
-
-I built that as **an MCP server first and a website second.**
-
-The developer who needs this answer is already inside Claude Code, Codex or Cursor when the question comes up. Sending them to a documentation site is asking them to leave the place where the work is happening, read, translate, and come back. The better product puts the answer where the question was asked — and once an agent has the guide as structured data, it can act on it rather than just display it.
-
-So the primary surface is five MCP tools. The website is the share target: a guide needs to be a link you can paste into a thread, and reviewers need somewhere to click.
-
-## Try it in two minutes
-
-```bash
-claude mcp add --transport http pathfinder https://oauth-pathfinder-topaz.vercel.app/mcp
-```
-
-Then, in the agent:
-
-1. **"how hard is it to get a Slack OAuth app approved?"** → the card draws in the conversation
-2. **"what about Linear?"** → not in the library, so it researches live, about a minute
-3. **"I'm getting bad_redirect_uri on Slack"** → cause and fix from the known failure modes
-4. **"set it up for localhost:3000 and app.example.com"** → the exact redirect URIs, env var names, and which scopes are gated
+Live: https://oauth-pathfinder-topaz.vercel.app
+Repo: https://github.com/madanarnav2004/oauth-pathfinder
+MCP endpoint: https://oauth-pathfinder-topaz.vercel.app/mcp
 
 ![Google guide rendered inline in Codex](img/codex-inline-card.png)
 
-Or on the website: the front page, then any of the eight guides, then type an app that isn't there.
+*Google's guide, drawn inside a Codex chat after one sentence of prompt. That's the product.*
 
-## What a developer learns
+---
 
-Each guide opens with the answer in a sentence, then the numbers:
+## The problem I picked
 
-> **Google.** Half a day of setup, then weeks in a verification queue. Touch Gmail and it's an annual paid security assessment on top.
+"How do I set up OAuth for X" is not a hard question. "How hard will it be, and where will I get stuck" is, and it's the one a developer or PM needs answered before committing to an integration. Provider docs answer the first. Nobody answers the second well: the real answer is spread across a console, a policy page, a verification form and a forum thread from 2021.
 
-Setup time and waiting time are always separate, and drawn on one bar. For Google the setup is a sliver and the review is the rest — that ratio *is* the finding, and a single number would have hidden it.
+So I built for the second question. Each guide opens with one sentence ("Half a day of setup, then weeks in a verification queue") and the rest of the page exists to back it up.
 
-Then the route, every step marked **you**, **an agent**, or **the provider by name**, so "who is blocking me" is answerable at a glance. Then what will bite you, who does what, what changes your plan, and what to do when it breaks.
+## Decision 1: the agent is the product, the website is the receipt
 
-## Evidence, which is the whole product
+The person asking this is already in Claude Code, Codex or Cursor. Sending them to a docs site means they leave, read, translate, and come back. It also means the guide is trapped on a page, when an agent could act on it.
 
-A setup guide you can't audit is worth nothing. Four statuses:
+So the primary surface is an MCP server, with a card that renders inside the chat. The website is there so an answer can be a link in Slack and so a reviewer has something to click. I held it to that job: a lookup box, a library, nothing else. No accounts, no dashboard.
 
-**sourced** (a page we fetched says so) · **we ran this** (we called the endpoint) · **our read** (nobody states it) · **not documented** (we looked and couldn't find out)
+Rejected: a chat UI of my own. It would have been the most impressive demo and the wrong product.
 
-Two design decisions follow:
+## Decision 2: the answer is a sentence, then numbers
 
-**Only the exceptions are badged.** Sourced is the baseline, so it carries a numbered citation and no badge. A badge always means "this one is different." Earlier drafts put a chip on every row; it looked rigorous and conveyed nothing.
+An early version led with a difficulty score and a table of chips. It looked rigorous and told you nothing in the first five seconds. Now every guide leads with a plain sentence a PM could repeat in a meeting, then one bar that splits setup time from waiting time.
 
-**No invented timelines.** If no source states a wait, the guide says so and the bar runs off the edge. Most providers publish no review timeline, so most of the library has an undocumented wait. Saying "2–4 weeks" would be the single most useful-looking and most dishonest thing this product could do.
+Those two are always separate on purpose. For Google, setup is a sliver and the review is the rest. That ratio is the finding; a single "2 to 4 weeks" would hide it.
 
-For live generation these are enforced by code, not asked of the model: an unquoted `sourced` claim is downgraded, a second model family re-checks each quote against its claim, only the probe module can mint `we ran this`, and unsourced durations are dropped.
+## Decision 3: say "nobody documents this" instead of guessing
 
-## What I verified, and how
+Most providers publish no review timeline. The tempting, useful-looking move is to write "typically 2 to 4 weeks." It would be the most quotable line in the product and I'd have no source for it.
 
-- **50 automated tests.** The interesting ones feed a deliberately lying model into the pipeline and assert its unsupported claims get downgraded, its invented wait disappears, and its fabricated endpoint never gets probed.
-- **The card runs in a real host.** `npm run verify:card` starts the server, speaks MCP over HTTP, loads the card in a browser through the official MCP Apps `AppBridge`, completes the `ui/initialize` handshake, sends a real tool result, clicks both buttons and asserts the host receives the right `ui/message` and `ui/open-link`. Light and dark. Screenshots in `tests/host/shots/`.
-- **All sixteen provider endpoints probed** with a dummy client. Every one answered; those responses are the `we ran this` claims.
-- **Each guide checked against the provider's own docs.** `/how-we-checked` lists every correction.
+So when no source gives a wait, the guide says so and the bar runs off the edge. Most of the library is like this, and I think that's the honest picture of the problem. A PM who learns "this provider won't tell you" has learned something real about the risk.
 
-Three corrections worth naming:
+## Decision 4: mark the exceptions, never the default
 
-1. Search pointed me at a Google page for "verification requirements" that turns out to cover **only annual recertification**. Re-sourced.
-2. Google's own docs contain the most useful sentence for most apps, which I'd have missed by skimming: ask only for `openid email profile` and you skip the test-user list, the warning screen and the 7-day expiry entirely.
-3. Notion looks fully self-serve until the authorization page mentions that the authorize URL appears *after the connection is submitted for review* — and never says what that review is. Marked not documented rather than guessed either way.
+Every claim has one of four statuses: sourced, we ran this, our read, not documented. First draft: a badge on every row. It looked careful and was noise, because nearly every row got the same badge.
 
-## What I did not do
+Now only the exceptions get one. Sourced is the baseline, so it gets a numbered citation and nothing else. If you see a badge, that row is different, and you should look at it. This is the same instinct as a good code review: comment on what's odd.
 
-**I registered no OAuth apps.** That means creating accounts and passing identity checks, and an agent shouldn't do that on someone's behalf. The honest boundary is: an agent reads, probes public endpoints without credentials, drafts your justification text and prepares your config; a human signs in and submits. Every guide draws that line explicitly, because the brief asks what an agent can do *and where you take over*.
+## Decision 5: enforce honesty in code, not in the prompt
 
-The probes prove an endpoint exists and how it errors. They prove nothing about approval, and the guides say so.
+For live generation I don't ask the model to be careful. The pipeline checks:
 
-## Limits
+- a "sourced" claim needs a verbatim quote that actually appears in a page we fetched, or it's downgraded
+- a second model from a different family checks the quote really supports the claim
+- only the probe module can produce "we ran this"
+- a duration with no source behind it is dropped, not rounded
 
-- Eight apps, not a hundred. The format is the point; live generation reaches the rest.
-- The card is verified in the reference host (automated) and in Codex (by hand, `docs/img/codex-inline-card.png`), not yet in Claude's own clients.
-- Spotify's 2026 developer-access announcement, LinkedIn's Page-verification article, Discord's verification threshold and Meta's review timelines could not be read. They are marked, not filled in.
-- Live generation is only as good as what search finds. The quote check catches unsupported claims, not missing ones; `npm run eval` measures the gap against the hand-checked guides.
+There are tests that feed a deliberately lying model into the pipeline and assert the lies don't survive. If this were going to production, that's the part I'd protect most.
+
+## Decision 6: draw the line at registering apps
+
+I didn't create any OAuth apps. That means making accounts and passing identity checks, and I don't think an agent should do that for you. What it can do: read the docs, probe public endpoints with dummy credentials, work out your redirect URIs and scope gating, draft the justification skeleton. What you do: sign in and submit.
+
+Every guide marks each step as yours, the agent's, or the provider's by name, so "who is blocking me" is answerable at a glance. That boundary is the honest answer to what an agent can do here, and it's also the pitch for where a platform like Composio sits.
+
+## What I'd measure if this were real
+
+- **Did the answer change the decision?** The real metric. A guide that makes someone drop a provider or start the verification process a month earlier is worth more than a hundred views.
+- **Live generation accuracy** against the hand-checked guides. `npm run eval` holds each one out, regenerates it, and compares. It's how I'd decide which providers are safe to serve unreviewed.
+- **How often the wait is "not documented."** That's the gap I'd go after next, probably by asking developers who've been through it.
+
+## What I verified
+
+- 50 automated tests, including the lying-model ones.
+- The card runs in the official MCP Apps reference host (`npm run verify:card`: handshake, a real tool result, both buttons clicked, light and dark) and by hand in Codex, shown above.
+- All sixteen provider endpoints probed with a dummy client. Those responses are the "we ran this" claims.
+- Each guide checked against the provider's own docs. `/how-we-checked` lists every correction. Three worth naming: Google's "verification requirements" page turned out to cover only annual recertification, so I re-sourced it. Google's docs also say that asking only for `openid email profile` skips the test-user list, the warning screen and the 7-day expiry, which most apps should know. And Notion looks fully self-serve until the authorization page mentions a review it never describes, so that's marked not documented rather than guessed.
+
+## What's not done, plainly
+
+- Eight hand-checked apps, not a hundred. The format is the point; live generation covers the rest.
+- Not yet verified inside Claude's own clients, only the reference host and Codex.
+- A few pages wouldn't open for me: Spotify's 2026 developer-access announcement, LinkedIn's Page-verification article, Discord's verification threshold, Meta's review timelines. They're marked, not filled in.
+- Live generation is only as good as what search finds. The quote check catches unsupported claims, not missing ones.
+- On small phones the install command box clips the command.
 
 ## If I kept going
 
-A re-check job that flags guides whose sources changed; a shared library the live agent can contribute back to by pull request; and `prepare_setup` going one step further — opening the provider console in a browser with the form already filled, stopping at the sign-in.
+1. A re-check job that flags guides whose sources changed since they were read.
+2. A shared library the live agent can contribute to by pull request, so the hand-checked set grows from real lookups.
+3. `prepare_setup` going one step further: open the provider's console with the form pre-filled and stop at the sign-in.
